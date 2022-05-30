@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('display_language');
             $table->string('national_id');
             $table->string('beneficiary_phone');
+            $table->string('beneficiary_name');
             $table->string('date_of_birth');
             $table->string('account_number');
             $table->string('account_type');

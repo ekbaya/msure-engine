@@ -24,7 +24,15 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'phone' => 'required|phone:KE|unique:users,mobile',
+            'email' => 'email|unique:users,email',
+            'password' => 'confirmed',
+            'national_id' => 'required',
+            'date_of_birth' => 'required',
+            'beneficiary_phone' => 'required',
+            'beneficiary_name' => 'required',
         ];
     }
 }
