@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -40,25 +41,25 @@ class AspinEngine
     //**************************CUSTOMER MANAGEMENT****************************************/
 
     //register customer(we will pass user model through observers)
-    public function registerCustomer(): mixed
+    public function registerCustomer(User $user): mixed
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/customers';
         $payload = [
-            "full_name" => "Elias Baya",
-            "msisdn" => "00271603773356",
-            "first_name" => "Elias",
-            "partner_guid" => "demo",
-            "display_language" => "en",
-            "national_id" => "123456789",
-            "beneficiary_msisdn" => "002250700000001",
-            "beneficiary_name" => "John Bar",
-            "date_of_birth" => "2000-12-03",
-            "external_identifier" => "external_identifier",
-            "account_number" => "account_number",
-            "account_type" => "account_type",
-            "branch_code" => "branch_code",
-            "registration_channel" => "ApiClient"
+            "full_name" => $user->name,
+            "msisdn" => "00".$user->phone,
+            "first_name" => $user->surname,
+            "partner_guid" => config('app.aspinengine.partner_guid'),
+            "display_language" => $user->display_language,
+            "national_id" => $user->national_id,
+            "beneficiary_msisdn" => "00".$user->beneficiary_phone,
+            "beneficiary_name" => $user->beneficiary_name,
+            "date_of_birth" => $user->date_of_birth,
+            "external_identifier" => $user->ntsa_number,
+            "account_number" => "00".$user->phone,
+            "account_type" => $user->account_type,
+            "branch_code" => $user->branch_code,
+            "registration_channel" => $user->registration_channel
         ];
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()

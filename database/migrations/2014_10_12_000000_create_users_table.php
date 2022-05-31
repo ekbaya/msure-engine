@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->string('phone')->unique();
-            $table->string('first_name');
-            $table->string('last_name');
+            $table->string('name');
+            $table->string('surname');
             $table->string('display_language');
             $table->string('national_id');
             $table->string('beneficiary_phone');
@@ -27,7 +27,10 @@ return new class extends Migration
             $table->string('account_number');
             $table->string('account_type');
             $table->string('registration_channel');
+            $table->string('location');
+            $table->string('ntsa_number');
             $table->string('branch_code')->nullable();
+            $table->string('image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
