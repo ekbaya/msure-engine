@@ -15,11 +15,11 @@ class AuthController extends Controller
 {
     private function getToken($user): JsonResponse
     {
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth_token')->token;
 
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
+            'token' => $token->id,
+            'expires_at' =>$token->expires_at,
         ]);
     }
 

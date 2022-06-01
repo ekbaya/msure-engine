@@ -19,14 +19,12 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('name');
             $table->string('surname');
-            $table->string('display_language');
+            $table->string('display_language')->default('en');
             $table->string('national_id');
             $table->string('beneficiary_phone');
             $table->string('beneficiary_name');
             $table->string('date_of_birth');
-            $table->string('account_number');
-            $table->string('account_type');
-            $table->string('registration_channel');
+            $table->string('registration_channel')->default('ApiClient');
             $table->string('location');
             $table->string('ntsa_number');
             $table->string('branch_code')->nullable();

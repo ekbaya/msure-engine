@@ -26,9 +26,9 @@ class RegisterUserRequest extends FormRequest
         return [
             'name' => 'required',
             'surname' => 'required',
-            'phone' => 'required|phone:KE|unique:users,mobile',
+            'phone' => 'required|phone:KE|unique:users,phone',
             'email' => 'email|unique:users,email',
-            'password' => 'confirmed',
+            'password' => 'required',
             'national_id' => 'required',
             'date_of_birth' => 'required',
             'beneficiary_phone' => 'required',
