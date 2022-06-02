@@ -15,11 +15,11 @@ class AuthController extends Controller
 {
     private function getToken($user): JsonResponse
     {
-        $token = $user->createToken('auth_token')->token;
+        $token = $user->createToken('auth_token')->accessToken;
 
         return response()->json([
-            'token' => $token->id,
-            'expires_at' =>$token->expires_at,
+            'token' => $token,
+            'token_type' => 'Bearer',
         ]);
     }
 
@@ -27,7 +27,7 @@ class AuthController extends Controller
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $request->merge([
-            'phone' => '254' . substr($request->get('phone'), -9)
+            'phone' => '254' . substr($request->get('phone'), -9)//0712695820
         ]);
 
         $payload = $request->all();
@@ -73,10 +73,6 @@ class AuthController extends Controller
     }
 
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse {
-        $request->validate([
-            'phone' => 'required|phone:KE',
-            'otp' => 'required'
-        ]);
         $otpRequest = OTPRequest::query()->where('phone', '254' . substr($request->get('phone'), -9))->first();
         if (!is_null($otpRequest) && $otpRequest->otp == $request->get('otp') ) {
             $otpRequest->delete();

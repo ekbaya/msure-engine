@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
+
 use Illuminate\Http\Request;
 
 
@@ -22,8 +24,9 @@ Route::prefix('v1')->group(function () {
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 });
 
-Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function(){
+Route::group(['middleware' => 'auth:api','prefix' => 'v1'], function(){
     Route::get('/user', function( Request $request ){
+        log::info('++++ Incoming Request ++++++'.$request);
         return $request->user();
     });
 });
