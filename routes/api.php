@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function () {
         log::info('++++ Incoming Request ++++++' . $request);
         return $request->user();
     });
+    Route::get('users', [UserController::class, 'index']);
     Route::get('user-status', [UserController::class, 'status']);
     Route::get('products', [ProductsController::class, 'index']);
     Route::post('policy/buy', [ProductsController::class, 'purchasePolicy']);
