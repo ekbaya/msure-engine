@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -41,7 +42,7 @@ class AspinEngine
     //**************************CUSTOMER MANAGEMENT****************************************/
 
     //register customer(we will pass user model through observers)
-    public function registerCustomer(User $user): mixed
+    public function registerCustomer(User $user)
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/customers';
@@ -64,14 +65,13 @@ class AspinEngine
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()
             ->post($url, $payload);
-        Log::info($response->body());
-        return $response->json();
+        Log::info('REGISTER_USER====='.$response->body());
     }
 
     //get customer status{We are going to pass user phone}
-    public function getCustomerStatus(): mixed
+    public function getCustomerStatus(User $user): mixed
     {
-        $phone = "00271603773356";
+        $phone = "00".$user->phone;//e.g 00254712695820
         $partner = config('app.aspinengine.partner_guid');
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/customers/' . $phone . '/status?partner=' . $partner;
@@ -136,4 +136,23 @@ class AspinEngine
         Log::info($response->body());
         return $response->json();
     }
+
+    //Buy policy
+    public function buyPolicy(PurchasePolicyRequest $request)
+    {
+        $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
+        $url = config('app.aspinengine.base_url') . '/customers';
+        $payload = [
+            "amount_in_cents" => $request->amount_in_cents,
+            "channel" => 'ApiClient',
+            "msisdn" => "00".$request->user()->phone,
+            "product_code" => $request->product_code,
+        ];
+        $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
+            ->withoutVerifying()
+            ->post($url, $payload);
+        Log::info('BUY_POLICY====='.$response->body());
+        return $response->json();
+    }
+
 }

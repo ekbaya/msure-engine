@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Services\AspinEngine;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -12,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+       
     }
 
     /**
@@ -26,14 +28,15 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Get the user status
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function status(Request $request)
     {
-        //
+        $engine = new AspinEngine();
+        return $engine->getCustomerStatus($request->user());
     }
 
     /**
