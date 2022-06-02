@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use PhpParser\Node\Expr\Cast\String_;
 
 /**
  * Class AspinEngine.
@@ -88,21 +87,21 @@ class AspinEngine
     }
 
     //update Customer
-    public function updateCustomer(): mixed
+    public function updateCustomer(User $user): mixed
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/customers';
         $payload = [
-            "guid" => "0066ed36a490469488721b11155b5ec2",
-            "full_name" => "Bar",
-            "msisdn" => "00271603773356",
-            "first_name" => "Foo",
-            "partner_guid" => "demo",
-            "display_language" => "fr",
-            "national_id" => "national_id",
-            "beneficiary_msisdn" => "002250700000001",
-            "beneficiary_name" => "beneficiary name",
-            "date_of_birth" => "2000-12-03"
+            "guid" => $user->guid,
+            "full_name" => $user->name,
+            "msisdn" => "00".$user->phone,
+            "first_name" => $user->surname,
+            "partner_guid" => config('app.aspinengine.partner_guid'),
+            "display_language" => $user->display_language,
+            "national_id" => $user->national_id,
+            "beneficiary_msisdn" => $user->beneficiary_phone,
+            "beneficiary_name" => $user->beneficiary_name,
+            "date_of_birth" => $user->date_of_birth,
         ];
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()

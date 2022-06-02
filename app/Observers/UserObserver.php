@@ -28,7 +28,9 @@ class UserObserver
      */
     public function updated(User $user)
     {
-        //
+        //Update user/customer in ASPIN ENGINE
+        $engine = new AspinEngine();
+        $engine->updateCustomer($user);
     }
 
     /**
