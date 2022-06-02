@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Http\Requests\InitiateClaimRequest;
 use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use PhpParser\Node\Expr\Cast\String_;
 
 /**
  * Class AspinEngine.
@@ -65,6 +67,9 @@ class AspinEngine
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()
             ->post($url, $payload);
+
+        // update user guid from ASPIN ENGINE
+        $user->update(['guid'=> $response->guid]);
         Log::info('REGISTER_USER====='.$response->body());
     }
 
@@ -141,7 +146,7 @@ class AspinEngine
     public function buyPolicy(PurchasePolicyRequest $request)
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
-        $url = config('app.aspinengine.base_url') . '/customers';
+        $url = config('app.aspinengine.base_url') . '/products/buy?partner='.config('app.aspinengine.partner_guid');
         $payload = [
             "amount_in_cents" => $request->amount_in_cents,
             "channel" => 'ApiClient',
@@ -154,5 +159,93 @@ class AspinEngine
         Log::info('BUY_POLICY====='.$response->body());
         return $response->json();
     }
+
+    //get customer policy
+    public function getCustomerPolicy(User $user): mixed
+    {
+        $phone = "00".$user->phone;//e.g 00254712695820
+        $partner = config('app.aspinengine.partner_guid');
+        $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
+        $url = config('app.aspinengine.base_url') . '/policies/' . $phone . '/paid?partner=' . $partner;
+        $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
+            ->withoutVerifying()
+            ->get($url);
+        Log::info($response->body());
+        return $response->json();
+    }
+
+     //get customer active policy
+     public function getCustomerActivePolicy(User $user): mixed
+     {
+         $phone = "00".$user->phone;//e.g 00254712695820
+         $partner = config('app.aspinengine.partner_guid');
+         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
+         $url = config('app.aspinengine.base_url') . '/policies/customer/' . $phone . '?partner=' . $partner;
+         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
+             ->withoutVerifying()
+             ->get($url);
+         Log::info($response->body());
+         return $response->json();
+     }
+
+      //cancel  policy
+      public function cancelPolicy(string $id): mixed
+      {
+          $partner = config('app.aspinengine.partner_guid');
+          $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
+          $url = config('app.aspinengine.base_url') . '/policies/' . $id . '?partner=' . $partner;
+          $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
+              ->withoutVerifying()
+              ->delete($url);
+          Log::info($response->body());
+          return $response->json();
+      }
+
+      //**************************Claims****************************************/
+   //get customer claims
+   public function getCustomerClaims(User $user): mixed
+   {
+       $phone = "00".$user->phone;//e.g 00254712695820
+       $partner = config('app.aspinengine.partner_guid');
+       $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
+       $url = config('app.aspinengine.base_url') . '/claims/customer/' . $phone . '?partner=' . $partner;
+       $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
+           ->withoutVerifying()
+           ->get($url);
+       Log::info($response->body());
+       return $response->json();
+   }
+
+    //get claim details
+    public function getClaimDetails(string $id): mixed
+    {
+        $partner = config('app.aspinengine.partner_guid');
+        $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
+        $url = config('app.aspinengine.base_url') . '/claims/' . $id . '?partner=' . $partner;
+        $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
+            ->withoutVerifying()
+            ->get($url);
+        Log::info($response->body());
+        return $response->json();
+    }
+
+     //Initiate Claim
+     public function initiateClaim(InitiateClaimRequest $request)
+     {
+         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
+         $url = config('app.aspinengine.base_url') . '/claims?partner='.config('app.aspinengine.partner_guid');
+         $payload = [
+             "type" => $request->type,
+             "relation_to_main_member" => $request->relation_to_main_member,
+             "customer_guid" => $request->user()->guid,
+             "hospital_admission_date" => $request->hospital_admission_date,
+             "hospital_discharge_date" => $request->hospital_discharge_date,
+         ];
+         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
+             ->withoutVerifying()
+             ->post($url, $payload);
+         Log::info('CLAIM_REQUEST====='.$response->body());
+         return $response->json();
+     }
 
 }

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('guid')->unique();//ASIN ENGINE GUID. Will be filled on update
             $table->rememberToken();
             $table->timestamps();
         });

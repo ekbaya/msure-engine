@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClaimsController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -33,5 +34,11 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function () {
     });
     Route::get('user-status', [UserController::class, 'status']);
     Route::get('products', [ProductsController::class, 'index']);
-    Route::post('products/buy', [ProductsController::class, 'purchasepolicy']);
+    Route::post('policy/buy', [ProductsController::class, 'purchasePolicy']);
+    Route::get('policy', [ProductsController::class, 'customerPolicy']);
+    Route::get('policy/active', [ProductsController::class, 'customerActivepolicy']);
+    Route::delete('policy/{id}', [ProductsController::class, 'cancelPolicy']);
+    Route::get('claims', [ClaimsController::class, 'customerClaims']);
+    Route::get('claims/{id}', [ClaimsController::class, 'claimDetails']);
+    Route::post('claims', [ClaimsController::class, 'initiateClaim']);
 });

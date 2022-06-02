@@ -20,9 +20,27 @@ class ProductsController extends Controller
     }
 
     
-    public function purchasepolicy(PurchasePolicyRequest $request)
+    public function purchasePolicy(PurchasePolicyRequest $request)
     {
         $engine = new AspinEngine();
         return $engine->buyPolicy($request);
+    }
+
+    public function customerPolicy(Request $request)
+    {
+        $engine = new AspinEngine();
+        return $engine->getCustomerPolicy($request->user());
+    }
+
+    public function customerActivepolicy(Request $request)
+    {
+        $engine = new AspinEngine();
+        return $engine->getCustomerActivePolicy($request->user());
+    }
+
+    public function cancelPolicy(Request $request)
+    {
+        $engine = new AspinEngine();
+        return $engine->cancelPolicy($request->id);
     }
 }
