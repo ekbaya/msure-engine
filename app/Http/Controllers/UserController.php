@@ -17,8 +17,8 @@ class UserController extends Controller
     {
         return response()->json([
             'status' => 0,
-            'success' =>true,
-            'message' =>'Users fetched successfully',
+            'success' => true,
+            'message' => 'Users fetched successfully',
             'users' => User::all(),
         ]);
     }
@@ -35,18 +35,27 @@ class UserController extends Controller
         return $engine->getCustomerStatus($request->user());
     }
 
-    
+
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $request->user()->update(
+            [
+                'beneficiary_phone' => $request->input('beneficiary_phone'),
+                'beneficiary_name' => $request->input('beneficiary_name'),
+            ]
+        );
+
+        return response()->json([
+            'status' => 0,
+            'success' => true,
+            'message' => 'User updated successfully',
+            'data' => $request->user(),
+        ]);
     }
-
-
 }
