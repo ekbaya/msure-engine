@@ -219,7 +219,27 @@ return [
         'password' => env('PASSWORD'),
         'client_id' => env('CLIENT_ID'),
         'client_secret' => env('CLIENT_SECRET'),
+        'identifier' => 'aspinengine',
+    ],
+
+    'msure' => [
+        'short_code' => env('MSURE_SHORT_CODE'),
+        'pass_key' => env('MSURE_PASS_KEY'),
+        'consumer_key' => env('MSURE_CONSUMER_KEY'),
+        'consumer_secret' => env('MSURE_CONSUMER_SECRET'),
+        'callback_url' => env('MSURE_CALLBACK_URL'),
         'identifier' => 'msure',
     ],
+
+    'headers'=>[
+        [
+            'key'=>'Accept',
+            'value'=>'application/json'
+        ],
+        [
+            'key'=>'Content-Type',
+            'value'=>'application/json'
+        ],
+    ]
 
 ];

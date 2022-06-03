@@ -24,7 +24,7 @@ class PurchasePolicyRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount_in_cents' => 'required',
+            'amount' => 'required',
             'product_code' => 'required'
         ];
     }

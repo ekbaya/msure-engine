@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('email')->nullable();
             $table->string('phone')->unique();
+            $table->string('user_id');
             $table->string('name');
             $table->string('surname');
             $table->string('display_language')->default('en');
@@ -31,7 +32,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('guid')->unique();//ASIN ENGINE GUID. Will be filled on update
+            $table->string('guid')->nullable();//ASIN ENGINE GUID. Will be filled on update
             $table->rememberToken();
             $table->timestamps();
         });

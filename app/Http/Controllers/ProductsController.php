@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PurchasePolicyRequest;
 use App\Services\AspinEngine;
+use App\Services\MpesaService;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
@@ -22,8 +23,9 @@ class ProductsController extends Controller
     
     public function purchasePolicy(PurchasePolicyRequest $request)
     {
-        $engine = new AspinEngine();
-        return $engine->buyPolicy($request);
+        //mpesa
+        $mpesa = new MpesaService();
+        return $mpesa->stkPush($request);
     }
 
     public function customerPolicy(Request $request)
