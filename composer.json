@@ -14,6 +14,7 @@
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
         "propaganistas/laravel-phone": "^4.3",
+        "safaricom/mpesa": "^1.0",
         "timwassenburg/laravel-service-generator": "^1.0"
     },
     "require-dev": {
