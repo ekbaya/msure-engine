@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\Payment;
+use App\Services\AspinEngine;
 use App\Services\MpesaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -30,18 +31,24 @@ class PaymentController extends Controller
     {
 
         $response = json_decode($request->getContent());
-        
+
         $resultCode = $response->Body->stkCallback->ResultCode;
         $checkoutRequestID = $response->Body->stkCallback->CheckoutRequestID;
 
         if ($resultCode == 0) {
             $metaData = $response->Body->stkCallback->CallbackMetadata;
+            $payment = Payment::where("CheckoutRequestID", $checkoutRequestID);
             Payment::query()->where("CheckoutRequestID", $checkoutRequestID)->update([
                 "MpesaReceiptNumber" => $metaData->Item[1]->Value,
-                "TransactionDate"=>$metaData->Item[2]->Value,
-                "Status"=>"paid"
+                "TransactionDate" => $metaData->Item[2]->Value,
+                "Status" => "paid"
             ]);
+
+            //Commiting from to AspinEngine
+            $engine = new AspinEngine();
+            $engine->buyPolicy($payment);
+            $engine->addPayments($payment);
         }
-        Log::info("STK PUSH CALLBACK====".json_encode($response));
+        Log::info("STK PUSH CALLBACK====" . json_encode($response));
     }
 }

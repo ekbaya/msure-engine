@@ -7,6 +7,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\VerifyOtpRequest;
 use App\Models\OTPRequest;
 use App\Models\User;
+use App\Services\AspinEngine;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -36,6 +37,12 @@ class AuthController extends Controller
             $payload['password'] = Hash::make($request->get('password'));
 
         $user = User::create($payload);
+
+
+        //Create new user to ASPIN ENGINE
+        $engine = new AspinEngine();
+        $engine->registerCustomer($user);
+        
         return $this->getToken($user);
     }
 

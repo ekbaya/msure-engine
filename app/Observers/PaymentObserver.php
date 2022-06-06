@@ -26,7 +26,7 @@ class PaymentObserver
      * @return void
      */
     public function updated(Payment $payment)
-    {   dd($payment);
+    {
         Log::info("NEW PAYMENT====".json_encode($payment));
         $engine = new AspinEngine();
         $engine->buyPolicy($payment);
