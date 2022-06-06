@@ -44,7 +44,7 @@ class PaymentController extends Controller
                 "Status" => "paid"
             ]);
 
-            //Commiting from to AspinEngine
+            //Commiting to AspinEngine
             $engine = new AspinEngine();
             $engine->buyPolicy($payment);
             $engine->addPayments($payment);
