@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -9,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Payment extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasEvents;
 
     protected $fillable = [
         'MerchantRequestID',

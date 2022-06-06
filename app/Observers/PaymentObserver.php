@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Payment;
 use App\Services\AspinEngine;
+use Illuminate\Support\Facades\Log;
 
 class PaymentObserver
 {
@@ -25,7 +26,8 @@ class PaymentObserver
      * @return void
      */
     public function updated(Payment $payment)
-    {
+    {   dd($payment);
+        Log::info("NEW PAYMENT====".json_encode($payment));
         $engine = new AspinEngine();
         $engine->buyPolicy($payment);
         $engine->addPayments($payment);
