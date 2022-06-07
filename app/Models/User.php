@@ -28,7 +28,8 @@ class User extends Authenticatable
         'location',
         'beneficiary_name',
         'date_of_birth',
-        'ntsa_number'
+        'ntsa_number',
+        'display_language'
     ];
 
     /**

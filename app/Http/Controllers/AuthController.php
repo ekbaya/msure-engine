@@ -28,7 +28,7 @@ class AuthController extends Controller
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $request->merge([
-            'phone' => '254' . substr($request->get('phone'), -9)//0712695820
+            'phone' => '254' . substr($request->get('phone'), -9) //0712695820
         ]);
 
         $payload = $request->all();
@@ -38,15 +38,16 @@ class AuthController extends Controller
 
         $user = User::create($payload);
 
-
+        $u = $user->fresh();
         //Create new user to ASPIN ENGINE
         $engine = new AspinEngine();
-        $engine->registerCustomer($user);
-        
+        $engine->registerCustomer($u);
+
         return $this->getToken($user);
     }
 
-    public function login(LoginUserRequest $request): JsonResponse {
+    public function login(LoginUserRequest $request): JsonResponse
+    {
         $fieldType = filter_var($request->get('username'), FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
         if (!$request->has('password') && $fieldType == 'phone') {
 
@@ -76,18 +77,18 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Wrong username or password'
         ], 401);
-
     }
 
-    public function verifyOtp(VerifyOtpRequest $request): JsonResponse {
+    public function verifyOtp(VerifyOtpRequest $request): JsonResponse
+    {
         $otpRequest = OTPRequest::query()->where('phone', '254' . substr($request->get('phone'), -9))->first();
-        if (!is_null($otpRequest) && $otpRequest->otp == $request->get('otp') ) {
+        if (!is_null($otpRequest) && $otpRequest->otp == $request->get('otp')) {
             $otpRequest->delete();
-            if ($request->has('login') ) {
+            if ($request->has('login')) {
                 $user = User::query()->where('phone', '254' . substr($request->get('phone'), -9))->first();
 
                 if (is_null($user))
-                    return response()->json(['message' => 'OTP Validated successfully. User with mobile 254'. substr($request->get('mobile'), -9).' found.'], 404);
+                    return response()->json(['message' => 'OTP Validated successfully. User with mobile 254' . substr($request->get('mobile'), -9) . ' found.'], 404);
 
                 return $this->getToken($user);
             }

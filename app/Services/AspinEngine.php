@@ -47,38 +47,48 @@ class AspinEngine
     public function registerCustomer(User $user)
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
-        $url = config('app.aspinengine.base_url') . '/customers';
+        $url = config('app.aspinengine.base_url') . '/customers/register';
         $payload = [
             "full_name" => $user->name,
-            "msisdn" => "00" . $user->phone,
+            "msisdn" => $user->phone,
             "first_name" => $user->surname,
             "partner_guid" => config('app.aspinengine.partner_guid'),
             "display_language" => $user->display_language,
             "national_id" => $user->national_id,
-            "beneficiary_msisdn" => "00" . $user->beneficiary_phone,
+            "beneficiary_msisdn" => $user->beneficiary_phone,
             "beneficiary_name" => $user->beneficiary_name,
             "date_of_birth" => $user->date_of_birth,
             "external_identifier" => $user->ntsa_number,
-            "account_number" => "00" . $user->phone,
-            "account_type" => $user->account_type,
-            "branch_code" => $user->branch_code,
+            "account_number" => $user->phone,
+            "account_type" => "user",
+            "branch_code" => "1072",
             "registration_channel" => $user->registration_channel
         ];
-        $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
+
+        $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier), 'content-type' => 'application/json'])
             ->withoutVerifying()
             ->post($url, $payload);
 
-        if (isset($response->guid)) {
+        $res = $response->json();
+        $resp = $res['customer'];
+
+        
+        if ($resp['guid']) {
+            Log::info("SUCCESS".json_encode($resp['guid']));
+             $guid = $resp['guid'];
             // update user guid from ASPIN ENGINE
-            $user->update(['guid' => $response->guid]);
+            User::query()->where('email', $user->email)->update([
+                'guid'=>$guid
+            ]);
         }
-        Log::info('REGISTER_USER=====' . $response->body());
+
+        Log::info('REGISTER_USER=====' . $response->body()); 
     }
 
     //get customer status{We are going to pass user phone}
     public function getCustomerStatus(User $user): mixed
     {
-        $phone = "00" . $user->phone; //e.g 00254712695820
+        $phone = $user->phone; //e.g 00254712695820
         $partner = config('app.aspinengine.partner_guid');
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/customers/' . $phone . '/status?partner=' . $partner;
@@ -97,7 +107,7 @@ class AspinEngine
         $payload = [
             "guid" => $user->guid,
             "full_name" => $user->name,
-            "msisdn" => "00" . $user->phone,
+            "msisdn" => $user->phone,
             "first_name" => $user->surname,
             "partner_guid" => config('app.aspinengine.partner_guid'),
             "display_language" => $user->display_language,
@@ -116,7 +126,7 @@ class AspinEngine
     //serach Customers
     public function searchCustomers(): mixed
     {
-        $phone = "00271603773356";
+        $phone = "271603773356";
         $name = "Foo";
         $partner = config('app.aspinengine.partner_guid');;
         $size = "10";
@@ -150,9 +160,9 @@ class AspinEngine
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/products/buy?partner=' . config('app.aspinengine.partner_guid');
         $payload = [
-            "amount_in_cents" => ($payment->Amount * 100),//converting to cents
+            "amount_in_cents" => ($payment->Amount * 100), //converting to cents
             "channel" => 'ApiClient',
-            "msisdn" => "00" . $payment->PhoneNumber,
+            "msisdn" => $payment->PhoneNumber,
             "product_code" => $payment->PolicyGuid,
         ];
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
@@ -165,7 +175,7 @@ class AspinEngine
     //get customer policy
     public function getCustomerPolicy(User $user): mixed
     {
-        $phone = "00" . $user->phone; //e.g 00254712695820
+        $phone = $user->phone; //e.g 254712695820
         $partner = config('app.aspinengine.partner_guid');
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/policies/' . $phone . '/paid?partner=' . $partner;
@@ -179,7 +189,7 @@ class AspinEngine
     //get customer active policy
     public function getCustomerActivePolicy(User $user): mixed
     {
-        $phone = "00" . $user->phone; //e.g 00254712695820
+        $phone = $user->phone; //e.g 254712695820
         $partner = config('app.aspinengine.partner_guid');
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/policies/customer/' . $phone . '?partner=' . $partner;
@@ -207,7 +217,7 @@ class AspinEngine
     //get customer claims
     public function getCustomerClaims(User $user): mixed
     {
-        $phone = "00" . $user->phone; //e.g 00254712695820
+        $phone = $user->phone; //e.g 254712695820
         $partner = config('app.aspinengine.partner_guid');
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/claims/customer/' . $phone . '?partner=' . $partner;
@@ -256,7 +266,7 @@ class AspinEngine
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/products?partner=' . config('app.aspinengine.partner_guid');
         $payload = [
-            "amount_in_cents" => ($payment->Amount * 100),//converting to cents
+            "amount_in_cents" => ($payment->Amount * 100), //converting to cents
             "channel" => 'ApiClient',
             "status" => 'Succeeded',
             "mno_reference" => $payment->MpesaReceiptNumber,
