@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('surname');
             $table->string('display_language')->default('en');
             $table->string('national_id');
-            $table->string('beneficiary_phone');
-            $table->string('beneficiary_name');
+            $table->string('beneficiary_phone')->nullable();;
+            $table->string('beneficiary_name')->nullable();;
             $table->string('date_of_birth');
             $table->string('registration_channel')->default('ApiClient');
             $table->string('location');

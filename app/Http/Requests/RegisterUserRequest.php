@@ -31,8 +31,6 @@ class RegisterUserRequest extends FormRequest
             'password' => 'required',
             'national_id' => 'required',
             'date_of_birth' => 'required',
-            'beneficiary_phone' => 'required',
-            'beneficiary_name' => 'required',
             'location' => 'required',
             'ntsa_number' => 'required',
         ];

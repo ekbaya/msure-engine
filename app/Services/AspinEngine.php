@@ -103,7 +103,7 @@ class AspinEngine
     public function updateCustomer(User $user): mixed
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
-        $url = config('app.aspinengine.base_url') . '/customers';
+        $url = config('app.aspinengine.base_url') . '/customers/'.$user->guid;
         $payload = [
             "guid" => $user->guid,
             "full_name" => $user->name,
@@ -119,7 +119,7 @@ class AspinEngine
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()
             ->put($url, $payload);
-        Log::info($response->body());
+        Log::info("UPDATE_CUSTOMER=====".$response->body());
         return $response->json();
     }
 

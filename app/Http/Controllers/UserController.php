@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\AspinEngine;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -44,18 +45,34 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        $request->user()->update(
-            [
-                'beneficiary_phone' => $request->input('beneficiary_phone'),
-                'beneficiary_name' => $request->input('beneficiary_name'),
-            ]
-        );
+        $data = $request->all();
+        foreach ($data as $key => $value) {
+            Log::info("Updating " . $key . "With  " . $value);
+            if (!($key && $value)) {
+                return response()->json([
+                    "success" => true,
+                    "status" => 0,
+                    "message" => "Failed to update " . $key,
+                    "error" => $key . " is required"
+                ]);
+            }
+            $request->user()->update(
+                [
+                    $key => $value //"beneficiary_name"=>"Alice Kadzo"
+                ]
+            );
+        }
+
+        $u = $request->user()->fresh();
+        //Update User user to ASPIN ENGINE
+        $engine = new AspinEngine();
+        $engine->updateCustomer($u);
 
         return response()->json([
-            'status' => 0,
-            'success' => true,
-            'message' => 'User updated successfully',
-            'data' => $request->user(),
+            "success" => true,
+            "status" => 0,
+            "message" => "success",
+            "data" => $request->user()
         ]);
     }
 }

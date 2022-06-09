@@ -58,11 +58,10 @@ class User extends Authenticatable
     {
         parent::boot();
 
-        static::creating(function($user){
-            if(empty($user->user_id)){
+        static::creating(function ($user) {
+            if (empty($user->user_id)) {
                 $user->user_id = Str::uuid();
             }
-
         });
     }
 }
