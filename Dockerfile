@@ -39,7 +39,7 @@ RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 RUN rm -f /etc/nginx/nginx.conf
 RUN rm -f /etc/nginx/sites-enabled/default
 ADD . /var/www/app
-ADD ./docker/nginx /etc/nginx
+ADD /docker/nginx /etc/nginx
 
 WORKDIR /var/www/app
 
