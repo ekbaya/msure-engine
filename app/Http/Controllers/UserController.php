@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfileRequest;
 use App\Models\User;
 use App\Services\AspinEngine;
 use Illuminate\Http\Request;
@@ -72,6 +73,26 @@ class UserController extends Controller
             "success" => true,
             "status" => 0,
             "message" => "success",
+            "data" => $request->user()
+        ]);
+    }
+
+    public function store(UpdateProfileRequest $request, User $user)
+    {   
+        $user->storeUser($request)->storeMedia($request);
+
+        return 'Image uploaded successfully';
+    }
+
+    public function updateProfile(UpdateProfileRequest $request){
+        $path = $request->file('image')->store('public/images');
+        $request->user()->update([
+            "image" => $path,
+        ]);
+        return response()->json([
+            "success"=>true,
+            "status" =>0,
+            "message"=>"User updated successfully",
             "data" => $request->user()
         ]);
     }

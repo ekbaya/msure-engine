@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function () {
     });
     Route::get('users', [UserController::class, 'index']);
     Route::put('users', [UserController::class, 'update']);
+    Route::put('users/profile', [UserController::class, 'updateProfile']);
     Route::get('user-status', [UserController::class, 'status']);
     Route::get('products', [ProductsController::class, 'index']);
     Route::post('policy/buy', [ProductsController::class, 'purchasePolicy']);
