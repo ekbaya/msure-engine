@@ -79,6 +79,7 @@ class AuthController extends Controller
         ], 401);
     }
 
+    
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse
     {
         $otpRequest = OTPRequest::query()->where('phone', '254' . substr($request->get('phone'), -9))->first();
