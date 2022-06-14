@@ -1,64 +1,62 @@
-FROM ubuntu:18.04
-ENV DEBIAN_FRONTEND noninteractive
+FROM php:8.0-fpm
 
-ARG PHP_VERSION=8.0
+# Set working directory
+WORKDIR /var/www
 
-ENV PHP_VERSION ${PHP_VERSION}
+# Add docker php ext repo
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
-RUN apt-get update && \
-    apt-get -y upgrade && \
-    apt-get install -y software-properties-common && \
-    LC_ALL=C.UTF-8 add-apt-repository -y -u ppa:ondrej/php && \
-    apt-get install -y \
-    php${PHP_VERSION} \
-    php${PHP_VERSION}-fpm \
-    php${PHP_VERSION}-mysql \
-    mcrypt \
-    php${PHP_VERSION}-gd \
-    php${PHP_VERSION}-xml \
-    php${PHP_VERSION}-gmp \
-    curl \
+# Install php extensions
+RUN chmod +x /usr/local/bin/install-php-extensions && sync && \
+    install-php-extensions mbstring pdo_mysql zip exif pcntl gd memcached
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
     zip \
-    php${PHP_VERSION}-zip \
-    php${PHP_VERSION}-curl \
-    php${PHP_VERSION}-redis \
-    php${PHP_VERSION}-mbstring \
-    php${PHP_VERSION}-xml \
-    php${PHP_VERSION}-opcache \
-    php${PHP_VERSION}-bcmath \
-    openssl \
-    nginx \
-    vim \
-    supervisor && \
-    rm -fr /var/lib/apt/lists/*
+    jpegoptim optipng pngquant gifsicle \
+    unzip \
+    git \
+    curl \
+    lua-zlib-dev \
+    libmemcached-dev \
+    nginx
 
-RUN /usr/sbin/phpenmod mcrypt
+# Install supervisor
+RUN apt-get install -y supervisor
 
-RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN rm -f /etc/nginx/nginx.conf
-RUN rm -f /etc/nginx/sites-enabled/default
-ADD . /var/www/app
-ADD ./docker/nginx /etc/nginx
+# Clear cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /var/www/app
+# Add user for laravel application
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
 
-RUN chown -R www-data:www-data /var/www/app
+# Copy code to /var/www
+COPY --chown=www:www-data . /var/www
 
-RUN mkdir /run/php
+# add root to www group
+RUN chmod -R ug+w /var/www/storage
 
-COPY docker/php/laravel.conf /etc/php/${PHP_VERSION}/fpm/pool.d/laravel.conf
-COPY docker/php/php${PHP_VERSION}.ini /etc/php/${PHP_VERSION}/fpm/php.ini
+# Copy nginx/php/supervisor configs
+RUN cp docker/supervisor.conf /etc/supervisord.conf
+RUN cp docker/php.ini /usr/local/etc/php/conf.d/app.ini
+RUN cp docker/nginx.conf /etc/nginx/sites-enabled/default
 
-RUN rm /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+# PHP Error Log Files
+RUN mkdir /var/log/php
+RUN touch /var/log/php/errors.log && chmod 777 /var/log/php/errors.log
 
-RUN sed -i -e 's/;daemonize = yes/daemonize = no/g' /etc/php/${PHP_VERSION}/fpm/php-fpm.conf
+# Deployment steps
+RUN composer install --optimize-autoloader --no-dev
+RUN chmod +x /var/www/docker/run.sh
 
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN sed -i "s/#PHP_VERSION#/${PHP_VERSION}/g" /etc/supervisor/conf.d/supervisord.conf
-
-RUN chown -R www-data:www-data /var/log/supervisor/ &&\
-    chown -R www-data:www-data /etc/nginx/
-
-CMD ["/bin/bash", "./docker/entrypoint.sh"]
+EXPOSE 80
+ENTRYPOINT ["/var/www/docker/run.sh"]
