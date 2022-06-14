@@ -3,6 +3,19 @@ on:
     branches:
       - master
 
+env:
+  AWS_REGION: us-west-1                   # set this to your preferred AWS region, e.g. us-west-1
+  ECR_REPOSITORY: msure           # set this to your Amazon ECR repository name
+  ECS_SERVICE: msure                 # set this to your Amazon ECS service name
+  ECS_CLUSTER: msure                 # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: msure # set this to the path to your Amazon ECS task definition
+                                               # file, e.g. .aws/task-definition.json
+  CONTAINER_NAME: msure           # set this to the name of the container in the
+                                               # containerDefinitions section of your task definition
+
+permissions:
+  contents: read
+
 name: Deploy
 
 jobs:
@@ -22,43 +35,41 @@ jobs:
         run: |
           composer install --optimize-autoloader --prefer-dist --no-progress --no-suggest
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
-          aws-region: eu-west-1
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+        aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Get AWS ECR credentials
-        id: ecr-credentials
-        run: |
-          echo "::set-output name=username::AWS"
-          echo "::set-output name=password::`aws ecr get-login-password`"
-      - name: Docker build
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REGISTRY/msure:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/msure:$IMAGE_TAG
-      - name: Download task def
-        run: |
-          aws ecs describe-task-definition --task-definition msure --query taskDefinition > task-definition.json
-      - name: Render Amazon ECS task definition for container
-        id: render-container
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: msure
-          image: ${{ steps.login-ecr.outputs.registry }}/msure:${{ github.sha }}
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Deploy to Amazon ECS service
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.render-container.outputs.task-definition }}
-          service: msure
-          cluster: msure
-          wait-for-service-stability: true
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
