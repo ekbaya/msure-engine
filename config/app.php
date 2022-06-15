@@ -227,7 +227,7 @@ return [
         'pass_key' => env('MSURE_PASS_KEY'),
         'consumer_key' => env('MSURE_CONSUMER_KEY'),
         'consumer_secret' => env('MSURE_CONSUMER_SECRET'),
-        'callback_url' => env('MSURE_CALLBACK_URL'),
+        'callback_url' => env('APP_URL').'/api/v1/callbacl_url',
         'mpesa_base_url' => env('MPESA_BASE_URL','https://sandbox.safaricom.co.ke'),
         'identifier' => 'msure',
     ],
