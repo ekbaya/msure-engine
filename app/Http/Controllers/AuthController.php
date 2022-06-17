@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\VerifyOtpRequest;
+use App\Models\Customer;
 use App\Models\OTPRequest;
 use App\Models\User;
 use App\Services\AspinEngine;
@@ -39,10 +40,15 @@ class AuthController extends Controller
         $user = User::create($payload);
 
         $u = $user->fresh();
+
+        $request->merge(['user_id' => $u->user_id]);
+        //create Customer
+        $customerpayload = $request->all();
+        $customer = Customer::create($customerpayload);
+        $c = $customer->fresh();
         //Create new user to ASPIN ENGINE
         $engine = new AspinEngine();
-        $engine->registerCustomer($u);
-
+        $engine->registerCustomer($c);
         return $this->getToken($user);
     }
 
@@ -79,7 +85,7 @@ class AuthController extends Controller
         ], 401);
     }
 
-    
+
     public function verifyOtp(VerifyOtpRequest $request): JsonResponse
     {
         $otpRequest = OTPRequest::query()->where('phone', '254' . substr($request->get('phone'), -9))->first();

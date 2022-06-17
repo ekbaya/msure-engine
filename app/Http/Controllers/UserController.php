@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProfileRequest;
+use App\Models\Customer;
 use App\Models\User;
 use App\Services\AspinEngine;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class UserController extends Controller
             'status' => 0,
             'success' => true,
             'message' => 'Users fetched successfully',
-            'users' => User::all(),
+            'customers' => Customer::all(),
         ]);
     }
 
@@ -47,6 +48,7 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $data = $request->all();
+        $customer = Customer::where('user_id', $request->user()->user_id)->first();
         foreach ($data as $key => $value) {
             Log::info("Updating " . $key . "With  " . $value);
             if (!($key && $value)) {
@@ -57,42 +59,44 @@ class UserController extends Controller
                     "error" => $key . " is required"
                 ]);
             }
-            $request->user()->update(
+
+            $customer->update(
                 [
                     $key => $value //"beneficiary_name"=>"Alice Kadzo"
                 ]
             );
         }
 
-        $u = $request->user()->fresh();
-        //Update User user to ASPIN ENGINE
+        $c = $customer->fresh();
+        //Update Customer to ASPIN ENGINE
         $engine = new AspinEngine();
-        $engine->updateCustomer($u);
+        $engine->updateCustomer($c);
 
         return response()->json([
             "success" => true,
             "status" => 0,
             "message" => "success",
-            "data" => $request->user()
+            "data" => $c
         ]);
     }
 
     public function store(UpdateProfileRequest $request, User $user)
-    {   
+    {
         $user->storeUser($request)->storeMedia($request);
 
         return 'Image uploaded successfully';
     }
 
-    public function updateProfile(UpdateProfileRequest $request){
+    public function updateProfile(UpdateProfileRequest $request)
+    {
         $path = $request->file('image')->store('public/images');
         $request->user()->update([
             "image" => $path,
         ]);
         return response()->json([
-            "success"=>true,
-            "status" =>0,
-            "message"=>"User updated successfully",
+            "success" => true,
+            "status" => 0,
+            "message" => "User updated successfully",
             "data" => $request->user()
         ]);
     }

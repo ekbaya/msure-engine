@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\InitiateClaimRequest;
 use App\Http\Requests\PurchasePolicyRequest;
+use App\Models\Customer;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -44,25 +45,25 @@ class AspinEngine
     //**************************CUSTOMER MANAGEMENT****************************************/
 
     //register customer(we will pass user model through observers)
-    public function registerCustomer(User $user)
+    public function registerCustomer(Customer $customer)
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/customers/register';
         $payload = [
-            "full_name" => $user->name,
-            "msisdn" => $user->phone,
-            "first_name" => $user->surname,
+            "full_name" => $customer->name,
+            "msisdn" => $customer->phone,
+            "first_name" => $customer->surname,
             "partner_guid" => config('app.aspinengine.partner_guid'),
-            "display_language" => $user->display_language,
-            "national_id" => $user->national_id,
-            "beneficiary_msisdn" => $user->beneficiary_phone,
-            "beneficiary_name" => $user->beneficiary_name,
-            "date_of_birth" => $user->date_of_birth,
-            "external_identifier" => $user->ntsa_number,
-            "account_number" => $user->phone,
+            "display_language" => $customer->display_language,
+            "national_id" => $customer->national_id,
+            "beneficiary_msisdn" => $customer->beneficiary_phone,
+            "beneficiary_name" => $customer->beneficiary_name,
+            "date_of_birth" => $customer->date_of_birth,
+            "external_identifier" => $customer->ntsa_number,
+            "account_number" => $customer->phone,
             "account_type" => "user",
             "branch_code" => "1072",
-            "registration_channel" => $user->registration_channel
+            "registration_channel" => $customer->registration_channel
         ];
 
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier), 'content-type' => 'application/json'])
@@ -77,7 +78,7 @@ class AspinEngine
             Log::info("SUCCESS".json_encode($resp['guid']));
              $guid = $resp['guid'];
             // update user guid from ASPIN ENGINE
-            User::query()->where('email', $user->email)->update([
+            Customer::query()->where('email', $customer->email)->update([
                 'guid'=>$guid
             ]);
         }
@@ -100,21 +101,21 @@ class AspinEngine
     }
 
     //update Customer
-    public function updateCustomer(User $user): mixed
+    public function updateCustomer(Customer $customer): mixed
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
-        $url = config('app.aspinengine.base_url') . '/customers/'.$user->guid;
+        $url = config('app.aspinengine.base_url') . '/customers/'.$customer->guid;
         $payload = [
-            "guid" => $user->guid,
-            "full_name" => $user->name,
-            "msisdn" => $user->phone,
-            "first_name" => $user->surname,
+            "guid" => $customer->guid,
+            "full_name" => $customer->name,
+            "msisdn" => $customer->phone,
+            "first_name" => $customer->surname,
             "partner_guid" => config('app.aspinengine.partner_guid'),
-            "display_language" => $user->display_language,
-            "national_id" => $user->national_id,
-            "beneficiary_msisdn" => $user->beneficiary_phone,
-            "beneficiary_name" => $user->beneficiary_name,
-            "date_of_birth" => $user->date_of_birth,
+            "display_language" => $customer->display_language,
+            "national_id" => $customer->national_id,
+            "beneficiary_msisdn" => $customer->beneficiary_phone,
+            "beneficiary_name" => $customer->beneficiary_name,
+            "date_of_birth" => $customer->date_of_birth,
         ];
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()
