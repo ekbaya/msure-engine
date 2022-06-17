@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Customer extends Model
 {
@@ -23,4 +24,19 @@ class Customer extends Model
         'ntsa_number',
         'display_language'
     ];
+
+    protected $hidden = [
+        'id',
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($customer) {
+            if (empty($customer->customer_id)) {
+                $customer->customer_id = Str::uuid();
+            }
+        });
+    }
 }

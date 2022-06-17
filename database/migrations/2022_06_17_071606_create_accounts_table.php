@@ -15,8 +15,12 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->string('password');
+            $table->string('user_id');
+            $table->string('account_id');
+            $table->string('api_key');
+            $table->string('name');
+            $table->string('phone');
+            $table->string('email');
             $table->timestamps();
         });
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClaimsController;
 use App\Http\Controllers\PaymentController;
@@ -52,4 +53,10 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function () {
     Route::get('claims/{id}', [ClaimsController::class, 'claimDetails']);
     Route::post('claims', [ClaimsController::class, 'initiateClaim']);
     Route::get('reasons', [ReasonController::class, 'index']);
+});
+
+
+//Merchants
+Route::prefix('v1')->group(function () {
+    Route::post('accounts', [AccountController::class, 'create']);
 });
