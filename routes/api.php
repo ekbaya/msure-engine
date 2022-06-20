@@ -34,7 +34,7 @@ Route::prefix('v1')->group(function () {
     Route::post('reasons', [ReasonController::class, 'create']);
 });
 
-Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function () {
+Route::group(['middleware' => ['auth:api','role:customer'], 'prefix' => 'v1'], function () {
     Route::get('/user', function (Request $request) {
         log::info('++++ Incoming Request ++++++' . $request);
         $customer = Customer::query()->where('user_id', $request->user()->user_id)->get();
@@ -57,6 +57,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'v1'], function () {
 
 
 //Merchants
-Route::prefix('v1')->group(function () {
+Route::prefix('client')->group(function () {
     Route::post('accounts', [AccountController::class, 'create']);
+    Route::post('authenticate', [AccountController::class, 'authenticate']);
+});
+Route::group(['middleware' => ['auth:api','role:merchant'], 'prefix' => 'client'], function () {
+    Route::get('customers', [UserController::class, 'index']);
+    Route::get('customer-status', [UserController::class, 'status']);
+    Route::get('products', [ProductsController::class, 'index']);
 });

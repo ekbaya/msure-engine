@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\RegisterAccountRequest;
 use App\Models\Account;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,11 +25,18 @@ class AccountController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    private function getToken($user): JsonResponse
+    {
+        $token = $user->createToken('auth_token')->accessToken;
+
+        return response()->json([
+            'token' => $token,
+            'token_type' => 'Bearer',
+        ]);
+    }
+
+
     public function create(RegisterAccountRequest $request)
     {
         //create user
@@ -64,71 +74,57 @@ class AccountController extends Controller
 
         return response()->json(
             [
-                'success'=>true,
-                'status' =>0,
-                'message'=>'Client created Successfully',
-                'data'=>[
-                    'client_id'=>$client->id,
-                    'client_secret'=>$client->secret,
-                    'api_key'=>$api_key
+                'success' => true,
+                'status' => 0,
+                'message' => 'Client created Successfully',
+                'data' => [
+                    'client_id' => $client->id,
+                    'client_secret' => $client->secret,
+                    'api_key' => $api_key
                 ]
             ]
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function authenticate(Request $request)
     {
-        //
-    }
+        $clientId = $request->clientId;
+        $clientSecret = $request->clientSecret;
+        $username = $request->username;
+        $password = $request->password;
+        $apikey = $request->bearerToken();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        if (!$apikey) {
+            return response()->json(["message" => "Unauthenticated."], Response::HTTP_UNAUTHORIZED);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        //get account
+        $account = Account::query()->where('api_key', $apikey)->firstOrFail();
+        if (!$account) {
+            return response()->json(["message" => "Unauthenticated."], Response::HTTP_UNAUTHORIZED);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        if (!Auth::attempt(array('email' => $username, 'password' => $password))) {
+            return response()->json(["message" => "Unauthenticated."], Response::HTTP_UNAUTHORIZED);
+        }
+        //get user
+        $user = User::query()->where('email', $username)->firstOrFail();
+
+        //fetch client
+        $client = DB::table('oauth_clients')->where([
+            ['id', '=', $clientId],
+            ['secret', '=', $clientSecret]
+        ])->first();
+
+        if (!$client) {
+            return response()->json(["message" => "Unauthenticated."], Response::HTTP_UNAUTHORIZED);
+        }
+
+        if (!($account->user_id == $user->user_id)) {
+            return response()->json(["message" => "Unauthenticated."], Response::HTTP_UNAUTHORIZED);
+        }
+
+        return $this->getToken($user);
     }
 }
