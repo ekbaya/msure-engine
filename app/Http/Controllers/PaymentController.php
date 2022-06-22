@@ -6,7 +6,9 @@ use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\Payment;
 use App\Services\AspinEngine;
+use App\Services\BillingService;
 use App\Services\MpesaService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -50,5 +52,10 @@ class PaymentController extends Controller
             $engine->addPayments($payment);
         }
         Log::info("STK PUSH CALLBACK====" . json_encode($response));
+    }
+
+    public function test(Request $request){
+      $billing = new BillingService();
+      return Carbon::now();
     }
 }

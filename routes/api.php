@@ -31,6 +31,7 @@ Route::prefix('v1')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('callbacl_url', [PaymentController::class, 'callback']);
+    Route::post('test', [PaymentController::class, 'test']);
     Route::post('reasons', [ReasonController::class, 'create']);
 });
 
