@@ -6,6 +6,7 @@ use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\Payment;
 use App\Services\AspinEngine;
+use App\Services\BillingCycleAccountService;
 use App\Services\BillingService;
 use App\Services\MpesaService;
 use Carbon\Carbon;
@@ -39,23 +40,28 @@ class PaymentController extends Controller
 
         if ($resultCode == 0) {
             $metaData = $response->Body->stkCallback->CallbackMetadata;
-            $payment = Payment::where("CheckoutRequestID", $checkoutRequestID);
+
             Payment::query()->where("CheckoutRequestID", $checkoutRequestID)->update([
                 "MpesaReceiptNumber" => $metaData->Item[1]->Value,
                 "TransactionDate" => $metaData->Item[2]->Value,
                 "Status" => "paid"
             ]);
 
-            //Commiting to AspinEngine
-            $engine = new AspinEngine();
-            $engine->buyPolicy($payment);
-            $engine->addPayments($payment);
+            $payment = Payment::where("CheckoutRequestID", $checkoutRequestID)->first();
+
+            // //Commiting to AspinEngine
+            // $engine = new AspinEngine();
+            // $engine->buyPolicy($payment);
+            // $engine->addPayments($payment);
+
+            //Handling Billing Cycle Account
+            $billing = new BillingCycleAccountService();
+            $billing->create($payment);
+
+            //Handling Premium Accounts
+            $accounts = new BillingService();
+            $accounts->create($payment);
         }
         Log::info("STK PUSH CALLBACK====" . json_encode($response));
-    }
-
-    public function test(Request $request){
-      $billing = new BillingService();
-      return Carbon::now();
     }
 }

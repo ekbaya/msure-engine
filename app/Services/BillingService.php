@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\BAKSubscription;
 use App\Models\CalculatingPeriodAccount;
 use App\Models\ConvinienceFeeAccount;
-use App\Models\CountyAccount;
+use App\Models\Payment;
 use Carbon\Carbon;
 
 /**
@@ -13,21 +12,21 @@ use Carbon\Carbon;
  */
 class BillingService
 {
-    public function create(String $user_id, String $amount, String $reference)
+    public function create(Payment $payment)
     {
-        list($days, $balance) = $this->calculatePremium($amount);
+        list($days, $balance) = $this->calculatePremium($payment->Amount);
         if ($days == 0) {
             //Amount Less than KES 100
-            $this->balanceUserCalculatingPeriodAccount($user_id, $balance);
+            $this->balanceUserCalculatingPeriodAccount($payment->UserId, $balance);
         } elseif ($days > 0 && $balance > 0) {
             //Update the Calculating Period Accounts
-            $this->balanceUserCalculatingPeriodAccount($user_id, $balance);
+            $this->balanceUserCalculatingPeriodAccount($payment->UserId, $balance);
 
             //credit Accounts
-            $this->creditPremiumAccounts($user_id, $days, $reference);
+            $this->creditPremiumAccounts($payment->UserId, $days, $payment->MpesaReceiptNumber);
         } else {
             //credit accounts : There is no pending balance
-            $this->creditPremiumAccounts($user_id, $days, $reference);
+            $this->creditPremiumAccounts($payment->UserId, $days, $payment->MpesaReceiptNumber);
         }
     }
 
@@ -48,7 +47,7 @@ class BillingService
                 'status' => 'closed'
             ]
         );
-        return $calculatingPeriodAccount()->fresh();
+        return $calculatingPeriodAccount;
     }
 
     function updateCalculatingPeriodAccount(CalculatingPeriodAccount $calculatingPeriodAccount, $newAmount)
@@ -103,11 +102,11 @@ class BillingService
     function creditPremiumAccounts($user_id, $days, $reference)
     {
         //Get Latest Credit Date of any Account
-        $lastPaymentDate = ConvinienceFeeAccount::query()->where("user_id", $user_id)->latest('created_at')->first()->date;
-        if ($lastPaymentDate) {
-            $date = Carbon::createFromFormat('d-m-Y', $lastPaymentDate);
+        $account = ConvinienceFeeAccount::query()->where("user_id", $user_id)->latest('created_at')->first();
+        if ($account) {
+            $lastPaymentDate = $account->date;
             for ($j = 0; $j < $days; $j++) {
-                $date = $date->addDays($j + 1);
+                $date = Carbon::createFromFormat('d-m-Y', $lastPaymentDate)->addDays($j + 1);
                 BAKSubscriptionService::create($user_id, $date->format('d-m-Y'), $reference);
                 ConvinienceFeeAccountService::create($user_id, $date->format('d-m-Y'), $reference);
                 CountyAccountService::create($user_id, $date->format('d-m-Y'), $reference);
@@ -119,9 +118,9 @@ class BillingService
                 WardAccountService::create($user_id, $date->format('d-m-Y'), $reference);
             }
         } else {
-            $date = Carbon::now();
+           
             for ($j = 0; $j < $days; $j++) {
-                $date = $date->addDays($j);
+                $date = Carbon::now()->addDays($j+1);
                 BAKSubscriptionService::create($user_id, $date->format('d-m-Y'), $reference);
                 ConvinienceFeeAccountService::create($user_id, $date->format('d-m-Y'), $reference);
                 CountyAccountService::create($user_id, $date->format('d-m-Y'), $reference);

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Log;
 use Safaricom\Mpesa\Mpesa;
 
 /**
@@ -29,6 +30,7 @@ class MpesaService
         );
 
         $response = json_decode($stkPushSimulation);
+        Log::info("RES==========".$stkPushSimulation);
         $payment =  Payment::create(
             [
                 "MerchantRequestID" => $response->MerchantRequestID,
