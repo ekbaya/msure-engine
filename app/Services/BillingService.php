@@ -120,7 +120,7 @@ class BillingService
         } else {
            
             for ($j = 0; $j < $days; $j++) {
-                $date = Carbon::now()->addDays($j+1);
+                $date = Carbon::now()->addDays($j);
                 BAKSubscriptionService::create($user_id, $date->format('d-m-Y'), $reference);
                 ConvinienceFeeAccountService::create($user_id, $date->format('d-m-Y'), $reference);
                 CountyAccountService::create($user_id, $date->format('d-m-Y'), $reference);
