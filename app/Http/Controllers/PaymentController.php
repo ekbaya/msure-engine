@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PaymentRequest;
 use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\Payment;
+use App\Models\User;
 use App\Services\AspinEngine;
 use App\Services\BillingCycleAccountService;
 use App\Services\BillingService;
@@ -48,11 +49,21 @@ class PaymentController extends Controller
             ]);
 
             $payment = Payment::where("CheckoutRequestID", $checkoutRequestID)->first();
+            $user = User::where("user_id", $payment->UserId)->first()->get();
 
             // //Commiting to AspinEngine
-            // $engine = new AspinEngine();
-            // $engine->buyPolicy($payment);
-            // $engine->addPayments($payment);
+            $engine = new AspinEngine();
+            //check user status
+            $customer = $engine->getCustomerStatus($user);
+            if ($customer->policies) {
+                //User has a Policy
+                $engine->addPayments($payment);
+            }else{
+                $engine->buyPolicy($payment);
+                $engine->addPayments($payment);
+            }
+            
+            
 
             //Handling Billing Cycle Account
             $billing = new BillingCycleAccountService();

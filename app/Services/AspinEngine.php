@@ -145,6 +145,7 @@ class AspinEngine
     //get products
     public function getAllProducts(): mixed
     {
+        Log::info("HERE============================");
         $partner = config('app.aspinengine.partner_guid');
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/products?partner=' . $partner;

@@ -118,7 +118,7 @@ class BillingService
                 WardAccountService::create($user_id, $date->format('d-m-Y'), $reference);
             }
         } else {
-           
+           //First timer
             for ($j = 0; $j < $days; $j++) {
                 $date = Carbon::now()->addDays($j);
                 BAKSubscriptionService::create($user_id, $date->format('d-m-Y'), $reference);

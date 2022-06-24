@@ -19,10 +19,10 @@ class BillingCycleAccountService
             //Amount Less than KES 300
             $this->balanceUserBillingCycleAccount($payment->UserId, $balance);
         } elseif ($months > 0 && $balance > 0) {
-            //Update the Calculating Period Accounts
+            //Update the BillingCycleAccount
             $this->balanceUserBillingCycleAccount($payment->UserId, $balance);
 
-            //credit Accounts
+            //create Cover
             $amount = $payment->Amount - $balance;
             $this->createCover($payment->UserId, $months, $amount, $payment->MpesaReceiptNumber);
         } else {
@@ -35,9 +35,10 @@ class BillingCycleAccountService
 
     function calculateCover($amount)
     {
-        $days = (int)($amount / 300);
-        $balance = $amount % 300;
-        return array($days, $balance);
+        //680
+        $months = (int)($amount / 300);//2 months
+        $balance = $amount % 300;//80
+        return array($months, $balance);
     }
 
     function closeBillingCycleAccount(BillingCycleAccount $billingCycleAccount): BillingCycleAccount
@@ -99,7 +100,7 @@ class BillingCycleAccountService
         }
     }
 
-    function createCover($user_id, $months, $amount, $reference)
+    function createCover($user_id, $months, $amount, $reference)//Mpesa R
     {
         //Get End date of the latest Cover
         $cover = Cover::query()->where("user_id", $user_id)->latest('created_at')->first();
