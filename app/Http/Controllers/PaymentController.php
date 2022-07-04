@@ -27,7 +27,7 @@ class PaymentController extends Controller
             "status" => 0,
             "success" => true,
             "message" => "Payments fetched sucessfully",
-            "data" => Payment::all()->where(["Status" => "paid"])
+            "data" => Payment::all()->where("Status","paid")
         ]);
     }
 
@@ -72,7 +72,10 @@ class PaymentController extends Controller
             "status" => 0,
             "success" => true,
             "message" => "Payments fetched sucessfully",
-            "data" => Payment::all(),
+            "data" => Payment::where([
+                ['UserId', '=', $request->user()->user_id],
+                ['Status', '=', 'paid']
+            ])->get(),
         ]);
     }
 }
