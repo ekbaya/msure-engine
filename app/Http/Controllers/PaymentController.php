@@ -54,7 +54,7 @@ class PaymentController extends Controller
             // //Commiting to AspinEngine
             $engine = new AspinEngine();
             $engine->addPayments($payment);
-            
+
             //Handling Billing Cycle Account
             $billing = new BillingCycleAccountService();
             $billing->create($payment);
@@ -64,5 +64,15 @@ class PaymentController extends Controller
             $accounts->create($payment);
         }
         Log::info("STK PUSH CALLBACK====" . json_encode($response));
+    }
+
+    public function userTransactions(Request $request)
+    {
+        return response()->json([
+            "status" => 0,
+            "success" => true,
+            "message" => "Payments fetched sucessfully",
+            "data" => Payment::all()->where(["UserId" =>$request->user()->user_id,"Status" => "paid"])
+        ]);
     }
 }
