@@ -80,15 +80,8 @@ class AuthController extends Controller
             }
         }
 
-        $user = User::query()->where($fieldType, $request->get('username'))->firstOrFail();
-
-        if (is_null($user)) {
-            return response()->json([
-                'message' => 'User with this username is not found'
-            ], 404);
-        }
-
         if (Auth::attempt(array($fieldType => $request->get('username'), 'password' => $request->get('password')))) {
+            $user = User::query()->where($fieldType, $request->get('username'))->firstOrFail();
             return $this->getToken($user);
         }
 
