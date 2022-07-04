@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -52,7 +53,7 @@ class AuthController extends Controller
             $engine = new AspinEngine();
             $engine->registerCustomer($c);
         } catch (Exception $e) {
-           log("USER ALREADY REGISTERED");
+            Log::info('==Failed To Register==');
         }
 
         return $this->getToken($user);
