@@ -53,18 +53,8 @@ class PaymentController extends Controller
 
             // //Commiting to AspinEngine
             $engine = new AspinEngine();
-            //check user status
-            $customer = $engine->getCustomerStatus($user);
-            if ($customer->policies) {
-                //User has a Policy
-                $engine->addPayments($payment);
-            }else{
-                $engine->buyPolicy($payment);
-                $engine->addPayments($payment);
-            }
+            $engine->addPayments($payment);
             
-            
-
             //Handling Billing Cycle Account
             $billing = new BillingCycleAccountService();
             $billing->create($payment);

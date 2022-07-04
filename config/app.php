@@ -220,6 +220,8 @@ return [
         'client_id' => env('CLIENT_ID'),
         'client_secret' => env('CLIENT_SECRET'),
         'identifier' => 'aspinengine',
+        'product_code' => 'mshua_individual',
+        'product_amount' => 32600,
     ],
 
     'msure' => [

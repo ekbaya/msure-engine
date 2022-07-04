@@ -73,17 +73,20 @@ class AspinEngine
         $res = $response->json();
         $resp = $res['customer'];
 
-        
+
         if ($resp['guid']) {
-            Log::info("SUCCESS".json_encode($resp['guid']));
-             $guid = $resp['guid'];
+            Log::info("SUCCESS" . json_encode($resp['guid']));
+            $guid = $resp['guid'];
             // update user guid from ASPIN ENGINE
             Customer::query()->where('email', $customer->email)->update([
-                'guid'=>$guid
+                'guid' => $guid
             ]);
+
+            //Buy Policy For Customer
+            $this->buyPolicy($customer);
         }
 
-        Log::info('REGISTER_USER=====' . $response->body()); 
+        Log::info('REGISTER_USER=====' . $response->body());
     }
 
     //get customer status{We are going to pass user phone}
@@ -104,7 +107,7 @@ class AspinEngine
     public function updateCustomer(Customer $customer): mixed
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
-        $url = config('app.aspinengine.base_url') . '/customers/'.$customer->guid;
+        $url = config('app.aspinengine.base_url') . '/customers/' . $customer->guid;
         $payload = [
             "guid" => $customer->guid,
             "full_name" => $customer->name,
@@ -120,7 +123,7 @@ class AspinEngine
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()
             ->put($url, $payload);
-        Log::info("UPDATE_CUSTOMER=====".$response->body());
+        Log::info("UPDATE_CUSTOMER=====" . $response->body());
         return $response->json();
     }
 
@@ -157,15 +160,15 @@ class AspinEngine
     }
 
     //Buy policy
-    public function buyPolicy(Payment $payment)
+    public function buyPolicy(Customer $customer)
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/products/buy?partner=' . config('app.aspinengine.partner_guid');
         $payload = [
-            "amount_in_cents" => ($payment->Amount * 100), //converting to cents
+            "amount_in_cents" => config('app.aspinengine.product_amount'), //KES 326
             "channel" => 'ApiClient',
-            "msisdn" => $payment->PhoneNumber,
-            "product_code" => $payment->PolicyGuid,
+            "msisdn" => $customer->phone,
+            "product_code" => config('app.aspinengine.product_code'),
         ];
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()
