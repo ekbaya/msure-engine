@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\OTPRequest;
 use App\Models\User;
 use App\Services\AspinEngine;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -47,8 +48,13 @@ class AuthController extends Controller
         $customer = Customer::create($customerpayload);
         $c = $customer->fresh();
         //Create new user to ASPIN ENGINE
-        $engine = new AspinEngine();
-        $engine->registerCustomer($c);
+        try {
+            $engine = new AspinEngine();
+            $engine->registerCustomer($c);
+        } catch (Exception $e) {
+           log("USER ALREADY REGISTERED");
+        }
+
         return $this->getToken($user);
     }
 
