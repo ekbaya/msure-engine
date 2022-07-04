@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClaimsController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ReasonController;
@@ -44,15 +45,23 @@ Route::group(['middleware' => ['auth:api','role:customer'], 'prefix' => 'v1'], f
     Route::put('users', [UserController::class, 'update']);
     Route::put('users/profile', [UserController::class, 'updateProfile']);
     Route::get('user-status', [UserController::class, 'status']);
+
+
     Route::get('products', [ProductsController::class, 'index']);
     Route::post('policy/buy', [ProductsController::class, 'purchasePolicy']);
     Route::get('policy', [ProductsController::class, 'customerPolicy']);
     Route::get('policy/active', [ProductsController::class, 'customerActivepolicy']);
     Route::delete('policy/{id}', [ProductsController::class, 'cancelPolicy']);
+
+
     Route::get('claims', [ClaimsController::class, 'customerClaims']);
     Route::get('claims/{id}', [ClaimsController::class, 'claimDetails']);
     Route::post('claims', [ClaimsController::class, 'initiateClaim']);
+
     Route::get('reasons', [ReasonController::class, 'index']);
+    Route::post('messages', [MessageController::class, 'create']);
+    Route::get('messages', [MessageController::class, 'userMessages']);
+    Route::get('messages/all', [MessageController::class, 'index']);
 });
 
 
