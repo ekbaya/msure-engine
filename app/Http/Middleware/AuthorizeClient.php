@@ -18,7 +18,7 @@ class AuthorizeClient
     public function handle(Request $request, Closure $next, $role)
     {
         if ($request->user()->role != $role) {
-            return response()->json(["message" => "Unauthenticated."], Response::HTTP_UNAUTHORIZED);
+            return response()->json(["message" => "UnAuthorized."], Response::HTTP_UNAUTHORIZED);
         }
 
         return $next($request);
