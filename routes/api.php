@@ -38,7 +38,7 @@ Route::prefix('v1')->group(function () {
 Route::group(['middleware' => ['auth:api','role:customer'], 'prefix' => 'v1'], function () {
     Route::get('/user', function (Request $request) {
         log::info('++++ Incoming Request ++++++' . $request);
-        $customer = Customer::query()->where('user_id', $request->user()->user_id)->get();
+        $customer = Customer::query()->where('user_id', $request->user()->user_id)->firstOrFail();
         return $customer;
     });
     Route::get('users', [UserController::class, 'index']);
