@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClaimsController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PlacesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ReasonController;
 use App\Http\Controllers\UserController;
@@ -33,6 +34,13 @@ Route::prefix('v1')->group(function () {
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('callbacl_url', [PaymentController::class, 'callback']);
     Route::post('reasons', [ReasonController::class, 'create']);
+
+    // Places
+    Route::get('places/regions', [PlacesController::class, 'regions']);
+    Route::get('places/counties/{region_id}', [PlacesController::class, 'counties']);
+    Route::get('places/sub_counties/{county_id}', [PlacesController::class, 'subCounties']);
+    Route::get('places/wards/{sub_county_id}', [PlacesController::class, 'wards']);
+    Route::get('places/stages/{ward_id}', [PlacesController::class, 'stages']);
 });
 
 Route::group(['middleware' => ['auth:api','role:customer'], 'prefix' => 'v1'], function () {

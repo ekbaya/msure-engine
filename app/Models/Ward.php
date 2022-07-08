@@ -9,6 +9,8 @@ class Ward extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name','sub_county_id'];
+
     public function subCounty()
     {
         return $this->belongsTo(SubCounty::class);

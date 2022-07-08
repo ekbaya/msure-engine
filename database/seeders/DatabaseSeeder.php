@@ -16,5 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RegionSeeder::class);
         $this->call(CountySeeder::class);
+        $this->call(SubCountySeeder::class);
+        $this->call(WardSeeder::class);
     }
 }
