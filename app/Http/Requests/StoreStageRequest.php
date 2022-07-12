@@ -13,7 +13,7 @@ class StoreStageRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,13 @@ class StoreStageRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'required',
+            'ward_id' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
+            'leader_name' => 'required',
+            'leader_phone' => 'required',
+            'daily_contribution' => 'required',
         ];
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreStageRequest;
+use App\Http\Requests\StoreWardRequest;
 use App\Models\County;
 use App\Models\Region;
+use App\Models\Stage;
 use App\Models\SubCounty;
 use App\Models\Ward;
 use Illuminate\Http\Request;
@@ -70,5 +73,27 @@ class PlacesController extends Controller
                 "message" => "Ward Not Found"
             ], 404);
         }
+    }
+
+    public function createWard(StoreWardRequest $request){
+        $payload = $request->all();
+        $ward = Ward::create($payload);
+        return response()->json([
+            "success" => true,
+            "status" => 0,
+            "message" => "Ward added successfully",
+            "data" => $ward = Ward::create($payload),
+        ]);
+    }
+
+    public function addStage(StoreStageRequest $request){
+        $payload = $request->all();
+        $stage = Stage::create($payload);
+        return response()->json([
+            "success" => true,
+            "status" => 0,
+            "message" => "Stage added successfully",
+            "data" => $stage,
+        ]);
     }
 }

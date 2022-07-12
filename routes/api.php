@@ -43,11 +43,17 @@ Route::prefix('v1')->group(function () {
     Route::get('places/stages/{ward_id}', [PlacesController::class, 'stages']);
 });
 
-Route::group(['middleware' => ['auth:api','role:customer'], 'prefix' => 'v1'], function () {
+Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], function () {
     Route::get('/user', function (Request $request) {
         log::info('++++ Incoming Request ++++++' . $request);
         $customer = Customer::query()->where('user_id', $request->user()->user_id)->firstOrFail();
-        return $customer;
+        $customer->stage;//preload
+        return response()->json([
+            "status"=> 0,
+            "sucess"=> true,
+            "message"=>"User Account Fetched Sucessfully",
+            "user"=>$customer,
+        ]);
     });
     Route::get('users', [UserController::class, 'index']);
     Route::put('users', [UserController::class, 'update']);
@@ -80,8 +86,15 @@ Route::prefix('client')->group(function () {
     Route::post('accounts', [AccountController::class, 'create']);
     Route::post('authenticate', [AccountController::class, 'authenticate']);
 });
-Route::group(['middleware' => ['auth:api','role:merchant'], 'prefix' => 'client'], function () {
+Route::group(['middleware' => ['auth:api', 'role:merchant'], 'prefix' => 'client'], function () {
     Route::get('customers', [UserController::class, 'index']);
     Route::get('customer-status', [UserController::class, 'status']);
     Route::get('products', [ProductsController::class, 'index']);
+    Route::get('places/regions', [PlacesController::class, 'regions']);
+    Route::get('places/counties/{region_id}', [PlacesController::class, 'counties']);
+    Route::get('places/sub_counties/{county_id}', [PlacesController::class, 'subCounties']);
+    Route::get('places/wards/{sub_county_id}', [PlacesController::class, 'wards']);
+    Route::get('places/stages/{ward_id}', [PlacesController::class, 'stages']);
+    Route::post('places/wards', [PlacesController::class, 'createWard']);
+    Route::post('places/stages', [PlacesController::class, 'addStage']);
 });

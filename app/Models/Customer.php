@@ -12,6 +12,7 @@ class Customer extends Model
 
     protected $fillable = [
         'user_id',
+        'stage_id',
         'name',
         'surname',
         'beneficiary_phone',
@@ -28,6 +29,11 @@ class Customer extends Model
     protected $hidden = [
         'id',
     ];
+
+    public function stage()
+    {
+        return $this->belongsTo(Stage::class);
+    }
 
     protected static function boot()
     {

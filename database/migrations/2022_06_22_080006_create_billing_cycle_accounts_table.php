@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('account_id')->unique();
             $table->string('user_id');
-            $table->string('amount');//min KES 0 maximum KES 299
+            $table->string('amount');//min KES 0 maximum KES 326
             $table->string('status')->default('active');//active or closed
             $table->timestamps();
         });

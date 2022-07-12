@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Customer;
 use App\Models\VendorAccount;
 
 /**
@@ -9,12 +10,14 @@ use App\Models\VendorAccount;
  */
 class VendorAccountService
 {
-    public static function create(String $user_id,String $date, String $reference){
+    public static function create(Customer $customer, String $date, String $reference)
+    {
         VendorAccount::create(
             [
-                "user_id"=>$user_id,
-                "date" =>$date,
-                "reference"=>$reference
+                "user_id" => $customer->user_id,
+                "amount" => ($customer->stage->daily_contribution - (30 + 15)),
+                "date" => $date,
+                "reference" => $reference
             ]
         );
     }

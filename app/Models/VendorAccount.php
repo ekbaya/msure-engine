@@ -12,6 +12,7 @@ class VendorAccount extends Model
     use HasFactory;
 
     protected $fillable = [
+        'amount',
         'user_id',
         'date',
         'reference',

@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ward_accounts', function (Blueprint $table) {
+        Schema::create('vendor_accounts', function (Blueprint $table) {
             $table->id();
             $table->string('account_id')->unique();
             $table->string('user_id');
-            $table->string('amount')->default('10');//amount = KES 10
+            $table->string('amount');//Stage Amount - (Insurance Fee + Convinience Fee)
             $table->string('date');
             $table->string('reference');//calculating Period Account Id or Payment ID
             $table->timestamps();
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ward_accounts');
+        Schema::dropIfExists('vendor_accounts');
     }
 };

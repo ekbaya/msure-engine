@@ -16,7 +16,7 @@ class BillingCycleAccountService
     {
         list($months, $balance) = $this->calculateCover($payment->Amount);
         if ($months == 0) {
-            //Amount Less than KES 300
+            //Amount Less than KES 326
             $this->balanceUserBillingCycleAccount($payment->UserId, $balance);
         } elseif ($months > 0 && $balance > 0) {
             //Update the BillingCycleAccount
@@ -35,9 +35,8 @@ class BillingCycleAccountService
 
     function calculateCover($amount)
     {
-        //680
-        $months = (int)($amount / 300);//2 months
-        $balance = $amount % 300;//80
+        $months = (int)($amount / 326);
+        $balance = $amount % 326;
         return array($months, $balance);
     }
 
@@ -45,7 +44,7 @@ class BillingCycleAccountService
     {
         $billingCycleAccount->update(
             [
-                'amount' => '300',
+                'amount' => '326',
                 'status' => 'closed'
             ]
         );
@@ -64,7 +63,7 @@ class BillingCycleAccountService
     function balanceUserBillingCycleAccount($user_id, $balance)
     {
         /*
-            - Amount is less than KES 300
+            - Amount is less than KES 326
             - Update the Billing Cycle Account
              */
         $billingCycleAccount = BillingCycleAccount::query()->where([
@@ -74,25 +73,25 @@ class BillingCycleAccountService
 
         if ($billingCycleAccount) {
             $newAmount = $billingCycleAccount->amount + $balance;
-            if ($newAmount < 300) {
+            if ($newAmount < 326) {
                 //Update Account
                 $this->updateBillingCycleAccount($billingCycleAccount, $newAmount);
-            } elseif ($newAmount == 300) {
+            } elseif ($newAmount == 326) {
                 //close account
                 $account = $this->closeBillingCycleAccount($billingCycleAccount);
 
                 //Create Cover
                 $this->createCover($user_id, 1, $newAmount, $account->account_id);
             } else {
-                //Amount is more than 300
-                $amount = $newAmount - 300;
+                //Amount is more than 326
+                $amount = $newAmount - 326;
                 //close account
                 $account = $this->closeBillingCycleAccount($billingCycleAccount);
                 //Open a new Billing Cycle Account
                 CoverService::createBillingCycle($user_id, $amount);
 
                 //Create Cover
-                $this->createCover($user_id, 1, "300", $account->account_id);
+                $this->createCover($user_id, 1, "326", $account->account_id);
             }
         } else {
             //No Billing Cycle Account: Create New

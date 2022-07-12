@@ -99,10 +99,14 @@ class AccountController extends Controller
             return response()->json(["message" => "Unauthenticated."], Response::HTTP_UNAUTHORIZED);
         }
 
-        //get account
+        try {
+           //get account
         $account = Account::query()->where('api_key', $apikey)->firstOrFail();
         if (!$account) {
             return response()->json(["message" => "Unauthenticated."], Response::HTTP_UNAUTHORIZED);
+        }
+        } catch (\Throwable $th) {
+            return response()->json(["message" => "No Accounts Found."], Response::HTTP_NOT_FOUND);
         }
 
         if (!Auth::attempt(array('email' => $username, 'password' => $password))) {
