@@ -23,7 +23,7 @@ class BillingService
             $this->balanceUserCalculatingPeriodAccount($customer, $balance);
         } elseif ($days > 0 && $balance > 0) {
             //Update the Calculating Period Accounts
-            $this->balanceUserCalculatingPeriodAccount($payment->UserId, $balance);
+            $this->balanceUserCalculatingPeriodAccount($customer, $balance);
 
             //credit Accounts
             $this->creditPremiumAccounts($customer, $days, $payment->MpesaReceiptNumber);
