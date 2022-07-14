@@ -19,6 +19,9 @@ class CalculatingPeriodAccount extends Model
     
     protected $hidden = [
         'id',
+        'status',
+        'created_at',
+        'updated_at'
     ];
 
     protected static function boot()
