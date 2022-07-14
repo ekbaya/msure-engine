@@ -17,12 +17,12 @@ class CustomerController extends Controller
         try {
 
             $calculatingPeriodAccount = CalculatingPeriodAccount::query()->where([
-                ['user_id', '=', $request->user_id],
+                ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'active']
             ])->firstOrFail();
 
             $billingCycleAccount = BillingCycleAccount::query()->where([
-                ['user_id', '=', $request->user_id],
+                ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'active']
             ])->firstOrFail();
 
