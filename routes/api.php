@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClaimsController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PlacesController;
@@ -59,6 +60,7 @@ Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], 
     Route::put('users', [UserController::class, 'update']);
     Route::put('users/profile', [UserController::class, 'updateProfile']);
     Route::get('user-status', [UserController::class, 'status']);
+    Route::get('user/service-accounts', [CustomerController::class, 'serviceAccounts']);
 
 
     Route::get('products', [ProductsController::class, 'index']);
