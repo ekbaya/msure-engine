@@ -11,33 +11,38 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-   
+
     public function serviceAccounts(Request $request)
     {
+        $calculatingPeriodAccount = null;
+        $billingCycleAccount = null;
         try {
-
             $calculatingPeriodAccount = CalculatingPeriodAccount::query()->where([
                 ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'active']
             ])->firstOrFail();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        try {
 
             $billingCycleAccount = BillingCycleAccount::query()->where([
                 ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'active']
             ])->firstOrFail();
-
-            return response()->json([
-                "status"=>0,
-                "sucess"=>true,
-                "message"=>"Service accounts fetched sucessfully.",
-                "data"=>[
-                    "calculatingPeriodAccount"=> $calculatingPeriodAccount,
-                    "billingCycleAccount"=> $billingCycleAccount,
-                ],
-            ],200);
-
+            
         } catch (\Throwable $th) {
-            return response()->json(["message"=>"User Has No any recurring balances"], 404);
+         
         }
+
+        return response()->json([
+            "status" => 0,
+            "sucess" => true,
+            "message" => "Service accounts fetched sucessfully.",
+            "data" => [
+                "calculatingPeriodAccount" => $calculatingPeriodAccount,
+                "billingCycleAccount" => $billingCycleAccount,
+            ],
+        ], 200);
     }
 }
