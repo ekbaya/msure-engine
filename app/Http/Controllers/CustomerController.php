@@ -30,7 +30,7 @@ class CustomerController extends Controller
                 ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'active']
             ])->firstOrFail();
-            
+
         } catch (\Throwable $th) {
          
         }
@@ -44,5 +44,5 @@ class CustomerController extends Controller
                 "billingCycleAccount" => $billingCycleAccount,
             ],
         ], 200);
-    }
+    } 
 }
