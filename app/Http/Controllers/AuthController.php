@@ -52,6 +52,7 @@ class AuthController extends Controller
         try {
             $engine = new AspinEngine();
             $engine->registerCustomer($c);
+            $engine->buyPolicy($c);// Buy new Client a Policy
         } catch (Exception $e) {
             Log::info('==Failed To Register==');
         }
