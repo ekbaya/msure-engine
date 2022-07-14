@@ -37,7 +37,7 @@ class CustomerController extends Controller
             ],200);
 
         } catch (\Throwable $th) {
-            return response()->json(["message"=>"User Has No any recurring balances"], 404);
+            return response()->json(["message"=>$request->user()->user_id], 404);
         }
     }
 }
