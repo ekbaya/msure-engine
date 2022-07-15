@@ -95,7 +95,7 @@ class PaymentController extends Controller
                 ['Status', '=', 'paid'],
             ])->get()
                 ->groupBy(function ($date) {
-                    return Carbon::parse($date->created_at)->format('d'); // grouping by years
+                    return Carbon::parse($date->created_at)->format('m'); // grouping by years
                     //return Carbon::parse($date->created_at)->format('m'); // grouping by months
                 }),
         ]);
