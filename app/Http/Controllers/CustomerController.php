@@ -48,7 +48,7 @@ class CustomerController extends Controller
             "sucess" => true,
             "message" => "Service accounts fetched sucessfully.",
             "data" => [
-                "daily_contribution" => Customer::query()->where('user_id', $request->user()->user_id)->firstOrFail(),
+                "daily_contribution" => Customer::query()->where("user_id", $request->user()->user_id)->firstOrFail()->stage->daily_contribution,
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
                 "settledDays" => $daysCovered,
