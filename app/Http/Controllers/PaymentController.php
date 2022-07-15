@@ -97,9 +97,7 @@ class PaymentController extends Controller
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
         ])->get()
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->created_at)->format('m');
-            });
+            ->DB::raw('MONTH(created_at)');
 
         return $payments;
     }

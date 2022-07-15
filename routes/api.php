@@ -80,8 +80,6 @@ Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], 
     Route::post('messages', [MessageController::class, 'create']);
     Route::get('messages', [MessageController::class, 'userMessages']);
     Route::get('messages/all', [MessageController::class, 'index']);
-
-    Route::get('payments', [PaymentController::class, 'userTransactions']);
 });
 
 
