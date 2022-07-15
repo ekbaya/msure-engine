@@ -137,7 +137,7 @@ class PaymentController extends Controller
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
         ])
-        ->groupBy('date')
+        ->groupBy('created_at')
         ->get();
 
        return $payments;
