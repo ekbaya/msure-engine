@@ -19,6 +19,8 @@ class MedicalInsurance extends Model
 
     protected $hidden = [
         'id',
+        'amount',
+        'updated_at',
     ];
 
     protected static function boot()
