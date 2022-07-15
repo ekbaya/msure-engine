@@ -53,6 +53,6 @@ class CustomerController extends Controller
                 "billingCycleAccount" => $billingCycleAccount,
                 "settledDays" => $daysCovered,
             ],
-        ], 200);
+        ], 200); 
     }
 }
