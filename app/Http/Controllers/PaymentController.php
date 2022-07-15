@@ -138,7 +138,7 @@ class PaymentController extends Controller
             ['Status', '=', 'paid'],
         ])
         ->groupBy(function ($date) {
-            return Carbon::parse($date->created_at)->format('Y-m-d');
+            return Carbon::parse($date->created_at)->format('YMD');
         })
         ->get();
 
