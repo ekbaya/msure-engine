@@ -18,6 +18,8 @@ class CustomerController extends Controller
         $calculatingPeriodAccount = null;
         $billingCycleAccount = null;
         $daysCovered = [];
+        $totalInsuranceAmount = 0;
+
         try {
             $calculatingPeriodAccount = CalculatingPeriodAccount::query()->where([
                 ['user_id', '=', $request->user()->user_id],
@@ -43,11 +45,22 @@ class CustomerController extends Controller
             //throw $th;
         }
 
+        try {
+            $count = BillingCycleAccount::query()->where([
+                ['user_id', '=', $request->user()->user_id],
+                ['status', '=', 'closed']
+            ])->count();
+            $totalInsuranceAmount = 326 * $count;
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         return response()->json([
             "status" => 0,
             "sucess" => true,
             "message" => "Service accounts fetched sucessfully.",
             "data" => [
+                "insurance_amount" => $totalInsuranceAmount,
                 "daily_contribution" => Customer::query()->where("user_id", $request->user()->user_id)->firstOrFail()->stage->daily_contribution,
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
