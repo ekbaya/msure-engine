@@ -27,7 +27,7 @@ class PaymentController extends Controller
             "status" => 0,
             "success" => true,
             "message" => "Payments fetched sucessfully",
-            "data" => Payment::all()->where("Status","paid")
+            "data" => Payment::all()->where("Status", "paid")
         ]);
     }
 
@@ -76,6 +76,28 @@ class PaymentController extends Controller
                 ['UserId', '=', $request->user()->user_id],
                 ['Status', '=', 'paid'],
             ])->get(),
+        ]);
+    }
+
+    /**
+     * Display a listing transactions as filtered by the request filter.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function transactions(Request $request)
+    {
+        return response()->json([
+            "status" => 0,
+            "success" => true,
+            "message" => "Payments fetched sucessfully",
+            "data" => Payment::where([
+                ['UserId', '=', $request->user()->user_id],
+                ['Status', '=', 'paid'],
+            ])->get()
+                ->groupBy(function ($date) {
+                    return Carbon::parse($date->created_at)->format('d'); // grouping by years
+                    //return Carbon::parse($date->created_at)->format('m'); // grouping by months
+                }),
         ]);
     }
 }
