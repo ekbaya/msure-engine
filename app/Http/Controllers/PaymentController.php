@@ -12,7 +12,6 @@ use App\Services\BillingService;
 use App\Services\MpesaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
@@ -98,7 +97,9 @@ class PaymentController extends Controller
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
         ])->get()
-            ->groupBy(DB::raw('MONTH(created_at)'));
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('m');
+            });
 
         return $payments;
     }
