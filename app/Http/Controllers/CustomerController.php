@@ -50,6 +50,7 @@ class CustomerController extends Controller
             "sucess" => true,
             "message" => "Service accounts fetched sucessfully.",
             "data" => [
+                "daily_contribution" => $request->user()->stage->daily_contribution,
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
                 "settledDays" => $daysCovered,
