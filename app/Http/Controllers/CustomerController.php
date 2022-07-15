@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\BillingCycleAccount;
 use App\Models\CalculatingPeriodAccount;
 use App\Models\Customer;
+use App\Models\MedicalInsurance;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -37,9 +38,8 @@ class CustomerController extends Controller
         }
 
         try {
-            $daysCovered = CalculatingPeriodAccount::query()->where([
-                ['user_id', '=', $request->user()->user_id],
-                ['status', '=', 'closed']
+            $daysCovered = MedicalInsurance::query()->where([
+                ['user_id', '=', $request->user()->user_id]
             ])->get();
         } catch (\Throwable $th) {
             //throw $th;
