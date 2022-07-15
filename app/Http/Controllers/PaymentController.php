@@ -68,33 +68,19 @@ class PaymentController extends Controller
 
     public function userTransactions(Request $request)
     {
-        return response()->json([
-            "status" => 0,
-            "success" => true,
-            "message" => "Payments fetched sucessfully",
-            "data" => Payment::where([
-                ['UserId', '=', $request->user()->user_id],
-                ['Status', '=', 'paid'],
-            ])->get(),
-        ]);
-    }
-
-    /**
-     * Display a listing transactions as filtered by the request filter.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function transactions(Request $request)
-    {
         $payments = [];
-        if ($request->filter == 'month') {
-            $payments = $this->transactionsByMonth($request);
-        }
-        if ($request->filter == 'year') {
-            $payments = $this->transactionsByYear($request);
-        }
-        if ($request->filter == 'day') {
-            $payments = $this->transactionsByDay($request);
+        if ($request->filter) {
+            if ($request->filter == 'month') {
+                $payments = $this->transactionsByMonth($request);
+            } else if ($request->filter == 'year') {
+                $payments = $this->transactionsByYear($request);
+            } else if ($request->filter == 'day') {
+                $payments = $this->transactionsByDay($request);
+            } else {
+                $payments = $this->allTransactions($request);
+            }
+        } else {
+            $payments = $this->allTransactions($request);
         }
 
         return response()->json([
@@ -115,7 +101,7 @@ class PaymentController extends Controller
                 return Carbon::parse($date->created_at)->format('m');
             });
 
-       return $payments;
+        return $payments;
     }
 
     static function transactionsByYear(Request $request)
@@ -128,7 +114,7 @@ class PaymentController extends Controller
                 return Carbon::parse($date->created_at)->format('Y');
             });
 
-       return $payments;
+        return $payments;
     }
 
     static function transactionsByDay(Request $request)
@@ -140,6 +126,15 @@ class PaymentController extends Controller
             ->groupBy(function ($date) {
                 return Carbon::parse($date->created_at)->format('d');
             });
-       return $payments;
+        return $payments;
+    }
+
+    static function allTransactions(Request $request)
+    {
+        $payments = Payment::where([
+            ['UserId', '=', $request->user()->user_id],
+            ['Status', '=', 'paid'],
+        ])->get();
+        return $payments;
     }
 }
