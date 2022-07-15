@@ -74,7 +74,7 @@ class PaymentController extends Controller
             "message" => "Payments fetched sucessfully",
             "data" => Payment::where([
                 ['UserId', '=', $request->user()->user_id],
-                ['Status', '=', 'paid']
+                ['Status', '=', 'paid'],
             ])->get(),
         ]);
     }

@@ -91,6 +91,7 @@ Route::prefix('client')->group(function () {
 });
 Route::group(['middleware' => ['auth:api', 'role:merchant'], 'prefix' => 'client'], function () {
     Route::get('customers', [UserController::class, 'index']);
+    Route::get('payments', [PaymentController::class, 'index']);
     Route::get('customer-status', [UserController::class, 'status']);
     Route::get('products', [ProductsController::class, 'index']);
     Route::get('places/regions', [PlacesController::class, 'regions']);
