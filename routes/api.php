@@ -62,7 +62,7 @@ Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], 
     Route::get('user-status', [UserController::class, 'status']);
     Route::get('user/service-accounts', [CustomerController::class, 'serviceAccounts']);
     Route::get('user/payments', [PaymentController::class, 'userTransactions']);
-    Route::get('user/transactions', [PaymentController::class, 'transactions']);
+    Route::get('user/transactions/{filter}', [PaymentController::class, 'transactions']);
 
 
     Route::get('products', [ProductsController::class, 'index']);

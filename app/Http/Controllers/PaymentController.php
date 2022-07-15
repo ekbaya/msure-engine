@@ -12,7 +12,6 @@ use App\Services\BillingService;
 use App\Services\MpesaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
@@ -87,20 +86,60 @@ class PaymentController extends Controller
      */
     public function transactions(Request $request)
     {
+        $payments = [];
+        if ($request->filter == 'month') {
+            $payments = $this->transactionsByMonth($request);
+        }
+        if ($request->filter == 'year') {
+            $payments = $this->transactionsByYear($request);
+        }
+        if ($request->filter == 'day') {
+            $payments = $this->transactionsByDay($request);
+        }
+
         return response()->json([
             "status" => 0,
             "success" => true,
             "message" => "Payments fetched sucessfully",
-            "data" => Payment::where([
-                ['UserId', '=', $request->user()->user_id],
-                ['Status', '=', 'paid'],
-            ])->get(array(
-                DB::raw('COUNT(*) as "views"')
-            ))
-                ->groupBy(function ($date) {
-                    return Carbon::parse($date->created_at)->format('m'); // grouping by years
-                    //return Carbon::parse($date->created_at)->format('m'); // grouping by months
-                }),
+            "data" => $payments,
         ]);
+    }
+
+    static function transactionsByMonth(Request $request)
+    {
+        $payments = Payment::where([
+            ['UserId', '=', $request->user()->user_id],
+            ['Status', '=', 'paid'],
+        ])->get()
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('m');
+            });
+
+       return $payments;
+    }
+
+    static function transactionsByYear(Request $request)
+    {
+        $payments = Payment::where([
+            ['UserId', '=', $request->user()->user_id],
+            ['Status', '=', 'paid'],
+        ])->get()
+            ->groupBy(function ($date) {
+                return Carbon::parse($date->created_at)->format('Y');
+            });
+
+       return $payments;
+    }
+
+    static function transactionsByDay(Request $request)
+    {
+        $payments = Payment::where([
+            ['UserId', '=', $request->user()->user_id],
+            ['Status', '=', 'paid'],
+        ])
+        ->groupBy('date')
+        ->get();
+
+       return $payments;
     }
 }
