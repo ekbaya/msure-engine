@@ -16,6 +16,7 @@ class CustomerController extends Controller
     {
         $calculatingPeriodAccount = null;
         $billingCycleAccount = null;
+        $daysCovered = [];
         try {
             $calculatingPeriodAccount = CalculatingPeriodAccount::query()->where([
                 ['user_id', '=', $request->user()->user_id],
@@ -35,6 +36,15 @@ class CustomerController extends Controller
          
         }
 
+        try {
+            $daysCovered = CalculatingPeriodAccount::query()->where([
+                ['user_id', '=', $request->user()->user_id],
+                ['status', '=', 'closed']
+            ])->get();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         return response()->json([
             "status" => 0,
             "sucess" => true,
@@ -42,6 +52,7 @@ class CustomerController extends Controller
             "data" => [
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
+                "settledDays" => $daysCovered,
             ],
         ], 200);
     } 
