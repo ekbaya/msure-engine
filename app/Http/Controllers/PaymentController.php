@@ -135,10 +135,11 @@ class PaymentController extends Controller
     {
         $payments = Payment::where([
             ['UserId', '=', $request->user()->user_id],
-            ['Status', '=', 'paid'],
-            ['created_at', '>=', Carbon::now()->subMonth()],
+            ['Status', '=', 'paid']
         ])
-        ->groupBy('created_at')
+        ->groupBy(function ($date) {
+            return Carbon::parse($date->created_at)->format('d');
+        })
         ->get();
 
        return $payments;
