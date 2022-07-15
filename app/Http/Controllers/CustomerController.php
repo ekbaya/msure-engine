@@ -32,9 +32,7 @@ class CustomerController extends Controller
                 ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'active']
             ])->firstOrFail();
-
         } catch (\Throwable $th) {
-         
         }
 
         try {
@@ -50,11 +48,11 @@ class CustomerController extends Controller
             "sucess" => true,
             "message" => "Service accounts fetched sucessfully.",
             "data" => [
-                "daily_contribution" => $request->user()->stage->daily_contribution,
+                "daily_contribution" => Customer::query()->where("user_id", $request->user()->user_id)->firstOrFail()->stage->daily_contribution,
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
                 "settledDays" => $daysCovered,
             ],
         ], 200);
-    } 
+    }
 }
