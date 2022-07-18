@@ -12,6 +12,7 @@ use App\Services\BillingService;
 use App\Services\MpesaService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
@@ -45,7 +46,7 @@ class PaymentController extends Controller
             Payment::query()->where("CheckoutRequestID", $checkoutRequestID)->update([
                 "MpesaReceiptNumber" => $metaData->Item[1]->Value,
                 "TransactionDate" => $metaData->Item[2]->Value,
-                "Status" => "paid"
+                "Status" => "p   aid"
             ]);
 
             $payment = Payment::where("CheckoutRequestID", $checkoutRequestID)->first();
@@ -109,10 +110,9 @@ class PaymentController extends Controller
         $payments = Payment::where([
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
-        ])->get()
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->created_at)->format('Y');
-            });
+        ])->select(DB::raw('count(id) as `data`'), DB::raw("DATE_FORMAT(created_at, '%m-%Y') new_date"),  DB::raw('YEAR(created_at) year, MONTH(created_at) month'))
+        ->groupby('year','month')
+        ->get();
 
         return $payments;
     }
