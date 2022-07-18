@@ -123,7 +123,7 @@ class PaymentController extends Controller
         $payments = Payment::where([
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
-        ])->selectRaw('year(created_at) year, monthname(created_at) month, dayname(created_at) day, sum(amount) amount')
+        ])->selectRaw('year(created_at) year, monthname(created_at) month, day(created_at) day, sum(amount) amount')
         ->groupBy('year', 'month', 'day')
         ->orderBy('year', 'desc')
         ->get();
