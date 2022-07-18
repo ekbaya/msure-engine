@@ -110,7 +110,9 @@ class PaymentController extends Controller
         $payments = Payment::where([
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
-        ])->selectRaw('year(created_at) year, monthname(created_at) month, '*' payments')
+        ])
+        ->select('*')
+        ->selectRaw('year(created_at) year, monthname(created_at) month, count(*) payments')
         ->groupBy('year', 'month')
         ->orderBy('year', 'desc')
         ->get();
