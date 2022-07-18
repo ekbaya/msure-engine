@@ -111,7 +111,7 @@ class PaymentController extends Controller
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
         ])->selectRaw('year(created_at) year, monthname(created_at) month, count(*) data')
-        ->groupBy('month')
+        ->groupBy('year', 'month')
         ->orderBy('year', 'desc')
         ->get();
 
