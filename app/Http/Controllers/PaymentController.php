@@ -97,10 +97,10 @@ class PaymentController extends Controller
         $payments = Payment::where([
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
-        ])->get()
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->created_at)->format('m');
-            });
+        ])->selectRaw('year(created_at) year, monthname(created_at) month, sum(amount) amount')
+        ->groupBy('year', 'month')
+        ->orderBy('year', 'desc')
+        ->get();
 
         return $payments;
     }
@@ -123,10 +123,10 @@ class PaymentController extends Controller
         $payments = Payment::where([
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
-        ])->get()
-            ->groupBy(function ($date) {
-                return Carbon::parse($date->created_at)->format('d');
-            });
+        ])->selectRaw('year(created_at) year, monthname(created_at) month, dayname(created_at) day, sum(amount) amount')
+        ->groupBy('year', 'month', 'day')
+        ->orderBy('year', 'desc')
+        ->get();
         return $payments;
     }
 
