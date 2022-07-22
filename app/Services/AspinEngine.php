@@ -71,19 +71,21 @@ class AspinEngine
             ->post($url, $payload);
 
         $res = $response->json();
-        $resp = $res['customer'];
+        try {
+            $resp = $res['customer'];
+            if ($resp['guid']) {
+                Log::info("SUCCESS" . json_encode($resp['guid']));
+                $guid = $resp['guid'];
+                // update user guid from ASPIN ENGINE
+                Customer::query()->where('email', $customer->email)->update([
+                    'guid' => $guid
+                ]);
 
-
-        if ($resp['guid']) {
-            Log::info("SUCCESS" . json_encode($resp['guid']));
-            $guid = $resp['guid'];
-            // update user guid from ASPIN ENGINE
-            Customer::query()->where('email', $customer->email)->update([
-                'guid' => $guid
-            ]);
-
-            //Buy Policy For Customer
-            $this->buyPolicy($customer);
+                //Buy Policy For Customer
+                $this->buyPolicy($customer);
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
         }
 
         Log::info('REGISTER_USER=====' . $response->body());
