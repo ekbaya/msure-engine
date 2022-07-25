@@ -34,7 +34,7 @@ class RegisterUserRequest extends FormRequest
             'date_of_birth' =>  [
                 'required',
                 'date_format:Y-m-d',
-                'after:-18 years'
+                'before:-18 years'
             ],
             'location' => 'required',
             'ntsa_number' => 'required',
