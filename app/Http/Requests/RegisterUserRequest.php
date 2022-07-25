@@ -31,7 +31,11 @@ class RegisterUserRequest extends FormRequest
             'email' => 'email|unique:users,email',
             'password' => 'required',
             'national_id' => 'required',
-            'date_of_birth' => 'required',
+            'date_of_birth' =>  [
+                'required',
+                'date_format:Y-m-d',
+                'after:-18 years'
+            ],
             'location' => 'required',
             'ntsa_number' => 'required',
         ];
