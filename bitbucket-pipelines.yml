@@ -3,7 +3,7 @@
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
 
-image: php:8.0-fpm
+image: php:8.1-fpm
 
 pipelines:
   default:
@@ -27,7 +27,7 @@ pipelines:
 definitions:
   services:
     mysql:
-      image: mysql:8.0
+      image: mysql:8.1
       environment:
         MYSQL_DATABASE: "msure"
         MYSQL_RANDOM_ROOT_PASSWORD: "yes"
