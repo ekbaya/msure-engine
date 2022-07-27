@@ -27,7 +27,7 @@ pipelines:
 definitions:
   services:
     mysql:
-      image: mysql:8.1
+      image: mysql:8.0
       environment:
         MYSQL_DATABASE: "msure"
         MYSQL_RANDOM_ROOT_PASSWORD: "yes"
