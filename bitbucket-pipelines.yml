@@ -12,8 +12,8 @@ pipelines:
               - mysql
             name: "Build and Test"
             script:
-              # - bash ./devops/build-server.sh
-              # - bash ./devops/build-project.sh
+              - bash ./devops/build-server.sh
+              - bash ./devops/build-project.sh
               - bash ./devops/run-tests.sh    
 #     - step:
 #         name: 'Deploying to Production'
