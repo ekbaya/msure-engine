@@ -7,4 +7,4 @@ php artisan serve &
 sleep 5
 
 # run PHP Unit Tests
-./vendor/bin/phpunit
+bash ./vendor/bin/phpunit
