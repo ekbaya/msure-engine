@@ -35,42 +35,36 @@ class PaymentController extends Controller
     public function callback(Request $request)
     {
 
-        $response = $request->all();
+        $response = json_decode($request->getContent());
 
-        try {
-            $resultCode = $response["Body"]["stkCallback"]["ResultCode"];
-            $checkoutRequestID = $response["Body"]["stkCallback"]["CheckoutRequestID"];
+        $resultCode = $response->Body->stkCallback->ResultCode;
+        $checkoutRequestID = $response->Body->stkCallback->CheckoutRequestID;
 
-            if ($resultCode == 0) {
-                $metaData = $response["Body"]["stkCallback"]["CallbackMetadata"];
+        if ($resultCode == 0) {
+            $metaData = $response->Body->stkCallback->CallbackMetadata;
 
-                Payment::query()->where("CheckoutRequestID", $checkoutRequestID)->update([
-                    "MpesaReceiptNumber" => $metaData->Item[1]->Value,
-                    "TransactionDate" => $metaData->Item[2]->Value,
-                    "Status" => "paid"
-                ]);
+            Payment::query()->where("CheckoutRequestID", $checkoutRequestID)->update([
+                "MpesaReceiptNumber" => $metaData->Item[1]->Value,
+                "TransactionDate" => $metaData->Item[2]->Value,
+                "Status" => "paid"
+            ]);
 
-                $payment = Payment::where("CheckoutRequestID", $checkoutRequestID)->first();
-                // $user = User::where("user_id", $payment->UserId)->first()->get();
+            $payment = Payment::where("CheckoutRequestID", $checkoutRequestID)->first();
+            $user = User::where("user_id", $payment->UserId)->first()->get();
 
-                // //Commiting to AspinEngine
-                $engine = new AspinEngine();
-                $engine->addPayments($payment);
+            // //Commiting to AspinEngine
+            $engine = new AspinEngine();
+            $engine->addPayments($payment);
 
-                //Handling Billing Cycle Account
-                $billing = new BillingCycleAccountService();
-                $billing->create($payment);
+            //Handling Billing Cycle Account
+            $billing = new BillingCycleAccountService();
+            $billing->create($payment);
 
-                //Handling Premium Accounts
-                $accounts = new BillingService();
-                $accounts->create($payment);
-            }
-        } catch (\Throwable $th) {
-            Log::info("ERROR RESOLVING RESPONSE");
-            Log::info(json_encode($response));
+            //Handling Premium Accounts
+            $accounts = new BillingService();
+            $accounts->create($payment);
         }
-        Log::info("STK PUSH CALLBACK====");
-        
+        Log::info("STK PUSH CALLBACK====" . json_encode($response));
     }
 
     public function userTransactions(Request $request)
@@ -104,9 +98,9 @@ class PaymentController extends Controller
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
         ])->selectRaw('year(created_at) year, monthname(created_at) month, sum(amount) amount')
-            ->groupBy('year', 'month')
-            ->orderBy('year', 'desc')
-            ->get();
+        ->groupBy('year', 'month')
+        ->orderBy('year', 'desc')
+        ->get();
 
         return $payments;
     }
@@ -117,9 +111,9 @@ class PaymentController extends Controller
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
         ])->selectRaw('year(created_at) year, monthname(created_at) month, sum(amount) amount')
-            ->groupBy('year', 'month')
-            ->orderBy('year', 'desc')
-            ->get();
+        ->groupBy('year', 'month')
+        ->orderBy('year', 'desc')
+        ->get();
 
         return $payments;
     }
@@ -130,9 +124,9 @@ class PaymentController extends Controller
             ['UserId', '=', $request->user()->user_id],
             ['Status', '=', 'paid'],
         ])->selectRaw('year(created_at) year, monthname(created_at) month, day(created_at) date, dayname(created_at) day, sum(amount) amount')
-            ->groupBy('year', 'month', 'date', 'day')
-            ->orderBy('year', 'desc')
-            ->get();
+        ->groupBy('year', 'month', 'date', 'day')
+        ->orderBy('year', 'desc')
+        ->get();
         return $payments;
     }
 
