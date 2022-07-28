@@ -15,6 +15,7 @@ ln -f -s .env.pipelines .env
 php artisan migrate --no-interaction
 php artisan key:generate
 php artisan passport:install --uuids
+php artisan db:seed
 
 # Run npm build.
 npm run prod
