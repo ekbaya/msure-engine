@@ -41,7 +41,7 @@ class PaymentController extends Controller
 
             Payment::query()->where("CheckoutRequestID", $checkoutRequestID)->update([
                 "MpesaReceiptNumber" => $metaData->Item[1]->Value,
-                "TransactionDate" => (String)$metaData->Item[2]->Value,
+                "TransactionDate" => $metaData->Item[3]->Value,
                 "Status" => "paid"
             ]);
 
