@@ -66,10 +66,11 @@ class PaymentController extends Controller
                 $accounts->create($payment);
             }
         } catch (\Throwable $th) {
-            Log::info("ERROR RESOLVING RESPONSE" . $response);
+            Log::info("ERROR RESOLVING RESPONSE");
+            Log::info($response);
         }
         Log::info("STK PUSH CALLBACK====");
-        Log::info($response);
+        
     }
 
     public function userTransactions(Request $request)
