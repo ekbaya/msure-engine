@@ -68,7 +68,8 @@ class PaymentController extends Controller
         } catch (\Throwable $th) {
             Log::info("ERROR RESOLVING RESPONSE" . $response);
         }
-        Log::info("STK PUSH CALLBACK====" . json_encode($response));
+        Log::info("STK PUSH CALLBACK====");
+        Log::info($response);
     }
 
     public function userTransactions(Request $request)
