@@ -26,7 +26,7 @@ class PurchasePolicyRequest extends FormRequest
         return [
             'amount' => 'required',
             'mobile' => 'required|phone:KE|unique:users,phone',
-            'product_code' => 'required'
+            'policy_id' => 'required'
         ];
     }
 }
