@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PaymentRequest;
-use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\Payment;
 use App\Models\User;
 use App\Services\AspinEngine;
 use App\Services\BillingCycleAccountService;
 use App\Services\BillingService;
-use App\Services\MpesaService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -45,7 +41,7 @@ class PaymentController extends Controller
 
             Payment::query()->where("CheckoutRequestID", $checkoutRequestID)->update([
                 "MpesaReceiptNumber" => $metaData->Item[1]->Value,
-                "TransactionDate" => "Test",//
+                "TransactionDate" => (String)$metaData->Item[2]->Value,
                 "Status" => "paid"
             ]);
 
