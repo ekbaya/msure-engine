@@ -35,14 +35,14 @@ class PaymentController extends Controller
     public function callback(Request $request)
     {
 
-        $response = json_decode($request->getContent());
+        $response = $request->all();
 
         try {
-            $resultCode = $response->Body->stkCallback->ResultCode;
-            $checkoutRequestID = $response->Body->stkCallback->CheckoutRequestID;
+            $resultCode = $response["Body"]["stkCallback"]["ResultCode"];
+            $checkoutRequestID = $response["Body"]["stkCallback"]["CheckoutRequestID"];
 
             if ($resultCode == 0) {
-                $metaData = $response->Body->stkCallback->CallbackMetadata;
+                $metaData = $response["Body"]["stkCallback"]["CallbackMetadata"];
 
                 Payment::query()->where("CheckoutRequestID", $checkoutRequestID)->update([
                     "MpesaReceiptNumber" => $metaData->Item[1]->Value,
