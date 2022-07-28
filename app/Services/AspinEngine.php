@@ -271,14 +271,14 @@ class AspinEngine
     public function addPayments(Payment $payment)
     {
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
-        $url = config('app.aspinengine.base_url') . '/products?partner=' . config('app.aspinengine.partner_guid');
+        $url = config('app.aspinengine.base_url') . '/payments?partner=' . config('app.aspinengine.partner_guid');
         $payload = [
             "amount_in_cents" => ($payment->Amount * 100), //converting to cents
             "channel" => 'ApiClient',
             "status" => 'Succeeded',
             "mno_reference" => $payment->MpesaReceiptNumber,
             "policy_guid" => $payment->PolicyGuid,
-            "effected_at" => $payment->TransactionDate,
+            "effected_at" => $payment->created_at,
         ];
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()
