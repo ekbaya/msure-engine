@@ -24,7 +24,7 @@ class MpesaService
             config('app.msure.short_code'),
             '254' . substr($paymentRequest->mobile, -9),
             config('app.msure.callback_url'),
-            $paymentRequest->policy_id,
+            "Msure Individual",
             "Purchasing policy",
             "Ok"
         );
