@@ -14,7 +14,6 @@ class MpesaService
 {
     public function stkPush(PurchasePolicyRequest $paymentRequest): mixed
     {
-        Log::info("PAYMENT REQ==========".$paymentRequest);
         $mpesa = new Mpesa();
         $stkPushSimulation = $mpesa->STKPushSimulation(
             config('app.msure.short_code'),
@@ -25,7 +24,7 @@ class MpesaService
             config('app.msure.short_code'),
             '254' . substr($paymentRequest->mobile, -9),
             config('app.msure.callback_url'),
-            "Msure Individual",
+            "Msure Individul",
             "Purchasing policy",
             "Ok"
         );
