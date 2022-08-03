@@ -14,6 +14,7 @@ class MpesaService
 {
     public function stkPush(PurchasePolicyRequest $paymentRequest): mixed
     {
+        Log::info("PAYMENT REQ==========".$paymentRequest);
         $mpesa = new Mpesa();
         $stkPushSimulation = $mpesa->STKPushSimulation(
             config('app.msure.short_code'),
