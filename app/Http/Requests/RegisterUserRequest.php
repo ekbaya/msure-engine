@@ -33,7 +33,7 @@ class RegisterUserRequest extends FormRequest
             'national_id' => 'required',
             'date_of_birth' =>  [
                 'required',
-                'date_format:YYYY-mm-dd',
+                'date_format:YYYY-MM-DD',
                 'before:-18 years'
             ],
             'location' => 'required',
