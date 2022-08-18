@@ -44,8 +44,8 @@ Route::prefix('v1')->group(function () {
     Route::get('places/stages/{ward_id}', [PlacesController::class, 'stages']);
 
     //Equite Callbacks
-    Route::post('test_payment', [PaymentController::class, 'equitelTestCallback']);
-    Route::post('payment', [PaymentController::class, 'equitelCallback']);
+    Route::post('test_payments', [PaymentController::class, 'equitelTestCallback']);
+    Route::post('payments', [PaymentController::class, 'equitelCallback']);
 });
 
 Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], function () {
