@@ -133,4 +133,20 @@ class PaymentController extends Controller
         ])->get();
         return $payments;
     }
+
+    //Equitel Test Callback
+    public function equitelTestCallback(Request $request)
+    {
+
+        $response = json_decode($request->getContent());
+        Log::info("EQUITEL CALLBACK====" . json_encode($response));
+    }
+
+    //Equitel Callback
+    public function equitelCallback(Request $request)
+    {
+
+        $response = json_decode($request->getContent());
+        Log::info("EQUITEL CALLBACK====" . json_encode($response));
+    }
 }

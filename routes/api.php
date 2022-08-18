@@ -42,6 +42,10 @@ Route::prefix('v1')->group(function () {
     Route::get('places/sub_counties/{county_id}', [PlacesController::class, 'subCounties']);
     Route::get('places/wards/{sub_county_id}', [PlacesController::class, 'wards']);
     Route::get('places/stages/{ward_id}', [PlacesController::class, 'stages']);
+
+    //Equite Callbacks
+    Route::post('test_payment', [PaymentController::class, 'equitelTestCallback']);
+    Route::post('payment', [PaymentController::class, 'equitelCallback']);
 });
 
 Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], function () {
