@@ -49,14 +49,14 @@ jobs:
           aws ecs describe-task-definition --task-definition msure --query taskDefinition > task-definition.json
       - name: Render Amazon ECS task definition for container
         id: render-container
-        uses: aws-actions/amazon-ecs-render-task-definition@vv
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
           container-name: msure
           image: ${{ steps.login-ecr.outputs.registry }}/msure:${{ github.sha }}
 
       - name: Deploy to Amazon ECS service
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-container.outputs.task-definition }}
           service: msure
