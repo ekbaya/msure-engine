@@ -54,11 +54,11 @@ jobs:
           task-definition: task-definition.json
           container-name: msure
           image: ${{ steps.login-ecr.outputs.registry }}/msure:${{ github.sha }}
- 
+
       - name: Deploy to Amazon ECS service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.render-container.outputs.task-definition }}
-          service: Msure-master
+          # service: msure
           cluster: msure
           wait-for-service-stability: true
