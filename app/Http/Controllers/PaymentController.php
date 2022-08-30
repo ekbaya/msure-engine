@@ -141,6 +141,8 @@ class PaymentController extends Controller
 
         $response = json_decode($request->getContent());
         Log::info("EQUITEL CALLBACK====" . json_encode($response));
+        $reference = $response->Reference;
+        Log::info("EQUITEL CALLBACK REFERENCE====" .$reference);
     }
 
     //Equitel Callback
@@ -151,9 +153,4 @@ class PaymentController extends Controller
         Log::info("EQUITEL CALLBACK====" . json_encode($response));
     }
 
-    public function testEquityPayments(Request $request){
-      //equity
-      $equity = new EquityService();
-    //   return $equity->getAccessToken('equity');
-    }
 }
