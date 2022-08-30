@@ -33,7 +33,7 @@ class EquityService
 
             $request = new Request('POST', config('app.equity.base_url') . '/v2.1/oauth/token', $headers);
             $response = $client->sendAsync($request, $payload)->wait();
-            if ($response->successful()) {
+            if ($response->getStatusCode() === "200") {
                 Log::info('==EQUITY RESPONSE==' . $response->getBody());
                 $token = $response->json('access_token');
                 Cache::put($identifier . '_equity_payments_token', $token, $response->json('expires_in') - 10);
