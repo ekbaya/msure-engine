@@ -20,7 +20,7 @@ class EquityService
             $payload = [
                 "client_secret" => config('app.equity.client_secret'),
                 "client_id" => config('app.equity.client_id'),
-                "grant_type" => config('app.equity.partner_guid'),
+                "grant_type" => config('app.equity.grant_type'),
             ];
 
             $response = Http::withHeaders([
