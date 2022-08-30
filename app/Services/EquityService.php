@@ -7,6 +7,7 @@ use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 
 /**
  * Class EquityService.
@@ -18,10 +19,7 @@ class EquityService
         $token = Cache::get($identifier . '_equity_payments_token');
 
         if (is_null($token)) {
-
-
             $client = new Client();
-
             $headers = [
                 'Content-Type' => 'application/x-www-form-urlencoded'
             ];
@@ -35,17 +33,16 @@ class EquityService
 
             $request = new Request('POST', config('app.equity.base_url') . '/v2.1/oauth/token', $headers);
             $response = $client->sendAsync($request, $payload)->wait();
-
-            Log::info('==EQUITY RESPONSE==' . $response->getBody());
-
-            // if ($response->successful()) {
-            //     Log::info('==EQUITY TOKEN==' . $response);
-            //     $token = $response->json('access_token');
-            //     Cache::put($identifier . '_equity_payments_token', $token, $response->json('expires_in') - 10);
-            // } else {
-            //     Log::info('==ERROR==' . $response);
-            //     $response->throw();
-            // }
+            if ($response->successful()) {
+                Log::info('==EQUITY RESPONSE==' . $response->getBody());
+                $token = $response->json('access_token');
+                Cache::put($identifier . '_equity_payments_token', $token, $response->json('expires_in') - 10);
+            } else {
+                Log::info('==ERROR==' . $response);
+                $response->throw();
+            }
         }
+
+        return $token;
     }
 }
