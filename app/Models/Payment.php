@@ -13,14 +13,10 @@ class Payment extends Model
     use HasFactory, Notifiable, HasEvents;
 
     protected $fillable = [
-        'MerchantRequestID',
-        'CheckoutRequestID',
-        'ResponseCode',
-        'ResponseDescription',
-        'CustomerMessage',
-        'Amount',
-        'PhoneNumber',
-        'PolicyGuid',
-        'UserId'
+        'reference',
+        'amount',
+        'phone',
+        'policy_guid',
+        'user_id'
     ];
 }

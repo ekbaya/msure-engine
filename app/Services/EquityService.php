@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\PurchasePolicyRequest;
+use App\Models\Payment;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
@@ -57,15 +58,25 @@ class EquityService
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $this->getAccessToken('equity'),
         ];
-        $refrence = 'REF'.Carbon::now()->timestamp;
+        $refrence = 'REF' . Carbon::now()->timestamp;
+
+        Payment::create(
+            [
+                "reference" => $refrence,
+                "amount" => $purchasePolicyRequest->amount,
+                "phone" => $purchasePolicyRequest->mobile,
+                "policy_guid" => $purchasePolicyRequest->policy_id,
+                "user_id" => $purchasePolicyRequest->user()->user_id
+            ]
+        );
         $body = array(
-            "phoneNumber"=> $purchasePolicyRequest->mobile,
-            "reference"=> $refrence,
-            "amount"=> $purchasePolicyRequest->amount,
-            "telco"=> "SAF",
-            "countryCode"=> "KE",
-            "callBackUrl"=> $callbackUrl,
-            "errorCallBackUrl"=> $callbackUrl,
+            "phoneNumber" => $purchasePolicyRequest->mobile,
+            "reference" => $refrence,
+            "amount" => $purchasePolicyRequest->amount,
+            "telco" => "SAF",
+            "countryCode" => "KE",
+            "callBackUrl" => $callbackUrl,
+            "errorCallBackUrl" => $callbackUrl,
         );
         $request = new Request('POST', config('app.equity.base_url') . '/v1/stkussdpush/stk/initiate', $headers, json_encode($body));
         $response = $client->sendAsync($request)->wait();

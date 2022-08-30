@@ -30,18 +30,14 @@ class MpesaService
         );
 
         $response = json_decode($stkPushSimulation);
-        Log::info("RES==========".$stkPushSimulation);
-        $payment =  Payment::create(
+        Log::info("RES==========" . $stkPushSimulation);
+        Payment::create(
             [
-                "MerchantRequestID" => $response->MerchantRequestID,
-                "CheckoutRequestID" => $response->CheckoutRequestID,
-                "ResponseCode" => $response->ResponseCode,
-                "ResponseDescription" => $response->ResponseDescription,
-                "CustomerMessage" => $response->CustomerMessage,
-                "Amount" => $paymentRequest->amount,
-                "PhoneNumber" => $paymentRequest->user()->phone,
-                "PolicyGuid" => $paymentRequest->policy_id,
-                "UserId" => $paymentRequest->user()->user_id
+                "reference" => $response->MerchantRequestID,
+                "amount" => $paymentRequest->amount,
+                "phone" => $paymentRequest->user()->phone,
+                "policy_guid" => $paymentRequest->policy_id,
+                "user_id" => $paymentRequest->user()->user_id
             ]
         );
         return response()->json([
