@@ -86,7 +86,6 @@ class EquityService
             'status' => 0,
             'success' => true,
             'message' => 'Check your phone for MPESA pop up to enter PIN',
-            'REF' => $refrence
         ]);
     }
 }
