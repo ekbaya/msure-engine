@@ -57,7 +57,7 @@ class EquityService
             'Authorization' => 'Bearer ' . $this->getAccessToken('equity'),
         ];
         $body = `{
-          "phoneNumber": $purchasePolicyRequest->mobile,
+          "phoneNumber": '254712695820',
           "reference": "REF010920211500",
           "amount": $purchasePolicyRequest->amount,
           "telco": "SAF",
