@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\AspinEngine;
 use App\Services\BillingCycleAccountService;
 use App\Services\BillingService;
+use App\Services\EquityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -148,5 +149,11 @@ class PaymentController extends Controller
 
         $response = json_decode($request->getContent());
         Log::info("EQUITEL CALLBACK====" . json_encode($response));
+    }
+
+    public function testEquityPayments(Request $request){
+      //equity
+      $equity = new EquityService();
+      return $equity->getAccessToken('equity');
     }
 }

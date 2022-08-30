@@ -46,6 +46,7 @@ Route::prefix('v1')->group(function () {
     //Equite Callbacks
     Route::post('test_payments', [PaymentController::class, 'equitelTestCallback']);
     Route::post('payments', [PaymentController::class, 'equitelCallback']);
+    Route::post('test', [PaymentController::class, 'testEquityPayments']);
 });
 
 Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], function () {

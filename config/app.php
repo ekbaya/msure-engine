@@ -234,6 +234,16 @@ return [
         'identifier' => 'msure',
     ],
 
+    'equity' => [
+        'client_id' => env('EQUITY_CLIENT_ID'),
+        'client_secret' => env('EQUITY_CLIENT_SECRET'),
+        'identifier' => 'equity',
+        'settlement_account' => env('EQUITY_CLIENT_SETTLEMENT_ACCOUNT'),
+        'callback_url' => env('APP_URL').'/api/v1/test_payments',
+        'grant_type'   => env('EQUITY_GRANT_TYPE'),
+        'base_url'  => env('EQUITY_BASE_URL','https://api-omnichannel-uat.azure-api.net'),
+    ],
+
     'headers'=>[
         [
             'key'=>'Accept',

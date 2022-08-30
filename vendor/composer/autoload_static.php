@@ -215,8 +215,8 @@ class ComposerStaticInit50b6381befa2f7c43aabf318c837ad76
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'libphonenumber\\' => 
         array (
@@ -396,8 +396,8 @@ class ComposerStaticInit50b6381befa2f7c43aabf318c837ad76
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -445,8 +445,8 @@ class ComposerStaticInit50b6381befa2f7c43aabf318c837ad76
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri-interfaces/src',
-            1 => __DIR__ . '/..' . '/league/uri/src',
+            0 => __DIR__ . '/..' . '/league/uri/src',
+            1 => __DIR__ . '/..' . '/league/uri-interfaces/src',
         ),
         'League\\OAuth2\\Server\\' => 
         array (
@@ -780,6 +780,7 @@ class ComposerStaticInit50b6381befa2f7c43aabf318c837ad76
         'App\\Services\\CountyService' => __DIR__ . '/../..' . '/app/Services/CountyService.php',
         'App\\Services\\CoverService' => __DIR__ . '/../..' . '/app/Services/CoverService.php',
         'App\\Services\\CustomerService' => __DIR__ . '/../..' . '/app/Services/CustomerService.php',
+        'App\\Services\\EquityService' => __DIR__ . '/../..' . '/app/Services/EquityService.php',
         'App\\Services\\InsuranceProviderService' => __DIR__ . '/../..' . '/app/Services/InsuranceProviderService.php',
         'App\\Services\\MedicalInsuranceService' => __DIR__ . '/../..' . '/app/Services/MedicalInsuranceService.php',
         'App\\Services\\MessageService' => __DIR__ . '/../..' . '/app/Services/MessageService.php',

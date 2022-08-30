@@ -155,6 +155,7 @@ return array(
     'App\\Services\\CountyService' => $baseDir . '/app/Services/CountyService.php',
     'App\\Services\\CoverService' => $baseDir . '/app/Services/CoverService.php',
     'App\\Services\\CustomerService' => $baseDir . '/app/Services/CustomerService.php',
+    'App\\Services\\EquityService' => $baseDir . '/app/Services/EquityService.php',
     'App\\Services\\InsuranceProviderService' => $baseDir . '/app/Services/InsuranceProviderService.php',
     'App\\Services\\MedicalInsuranceService' => $baseDir . '/app/Services/MedicalInsuranceService.php',
     'App\\Services\\MessageService' => $baseDir . '/app/Services/MessageService.php',
