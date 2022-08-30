@@ -23,6 +23,8 @@ class EquityService
                 "grant_type" => config('app.equity.grant_type'),
             ];
 
+            Log::info('==GRANT-TYPE==' .config('app.equity.grant_type'));
+
             $response = Http::withHeaders([
                 'Content-Type' => 'application/x-www-form-urlencoded'
             ])
