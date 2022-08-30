@@ -56,15 +56,15 @@ class EquityService
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $this->getAccessToken('equity'),
         ];
-        $body = `{
-          "phoneNumber": '254712695820',
-          "reference": "REF010920211500",
-          "amount": $purchasePolicyRequest->amount,
-          "telco": "SAF",
-          "countryCode": "KE",
-          "callBackUrl": $callbackUrl,
-          "errorCallBackUrl": $callbackUrl
-        }`;
+        $body = [
+          "phoneNumber"=> '254712695820',
+          "reference"=>  "REF010920211500",
+          "amount"=>  $purchasePolicyRequest->amount,
+          "telco"=>  "SAF",
+          "countryCode"=>  "KE",
+          "callBackUrl"=>  $callbackUrl,
+          "errorCallBackUrl"=>  $callbackUrl
+        ];
         $request = new Request('POST', config('app.equity.base_url') . '/v1/stkussdpush/stk/initiate', $headers, $body);
         $response = $client->sendAsync($request)->wait();
         Log::info('==PAYMENT RESPONSE==' . $response->getBody());
