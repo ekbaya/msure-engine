@@ -70,7 +70,7 @@ class EquityService
             ]
         );
         $body = array(
-            "phoneNumber" => '254723558427',
+            "phoneNumber" => '254712695820',
             "reference" => $refrence,
             "amount" => $purchasePolicyRequest->amount,
             "telco" => "SAF",
