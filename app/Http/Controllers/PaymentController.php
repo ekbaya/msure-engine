@@ -142,7 +142,7 @@ class PaymentController extends Controller
         $response = json_decode($request->getContent());
         Log::info("EQUITEL CALLBACK====" . json_encode($response));
         $reference = $response->Reference;
-        if ($response->StatusCode === "3") {
+        if ($response->StatusCode === "2" || $response->StatusCode === "3") {
             Payment::query()->where("reference", $reference)->update([
                 "transaction_id" => $response->AdditionalParameters->TelcoReference,
                 "transaction_date" => Carbon::now()->toDateTimeString(),
