@@ -36,7 +36,7 @@ class EquityService
             $request = new Request('POST', config('app.equity.base_url') . '/v2.1/oauth/token', $headers);
             $response = $client->sendAsync($request, $payload)->wait();
 
-            Log::info('==EQUITY RESPONSE==' . $response);
+            Log::info('==EQUITY RESPONSE==' . $response->getBody());
 
             // if ($response->successful()) {
             //     Log::info('==EQUITY TOKEN==' . $response);
