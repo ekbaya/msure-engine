@@ -94,7 +94,7 @@ class AspinEngine
     //get customer status{We are going to pass user phone}
     public function getCustomerStatus(User $user): mixed
     {
-        $phone = $user->phone; //e.g 00254712695820
+        $phone = '00'.$user->phone; //e.g 00254712695820
         $partner = config('app.aspinengine.partner_guid');
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/customers/' . $phone . '/status?partner=' . $partner;
