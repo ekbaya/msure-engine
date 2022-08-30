@@ -94,14 +94,14 @@ class AspinEngine
     //get customer status{We are going to pass user phone}
     public function getCustomerStatus(User $user): mixed
     {
-        $phone = '00'.$user->phone; //e.g 00254712695820
+        $phone = $user->phone; //e.g 254712695820
         $partner = config('app.aspinengine.partner_guid');
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/customers/' . $phone . '/status?partner=' . $partner;
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])
             ->withoutVerifying()
             ->get($url);
-        Log::info($response->body());
+        Log::info('RESPONSE========'.$response->body());
         return $response->json();
     }
 
