@@ -70,7 +70,7 @@ class EquityService
             ]
         );
         $body = array(
-            "phoneNumber" => '254712695820',
+            "phoneNumber" => '254'.substr($purchasePolicyRequest->mobile, -9), //254712695820
             "reference" => $refrence,
             "amount" => $purchasePolicyRequest->amount,
             "telco" => "SAF",
@@ -86,7 +86,7 @@ class EquityService
             'status' => 0,
             'success' => true,
             'message' => 'Check your phone for MPESA pop up to enter PIN',
-            'phone' => $purchasePolicyRequest->mobile,
+            'REF' => $refrence
         ]);
     }
 }

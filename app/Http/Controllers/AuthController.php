@@ -31,7 +31,7 @@ class AuthController extends Controller
     public function register(RegisterUserRequest $request): JsonResponse
     {
         $request->merge([
-            'phone' => '254' . substr($request->get('phone'), -9) //0712695820
+            'phone' => '254' . substr($request->get('phone'), -9) //254712695820
         ]);
 
         $payload = $request->all();
