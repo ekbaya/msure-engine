@@ -16,12 +16,12 @@ class EquityService
         $token = Cache::get($identifier . '_equity_payments_token');
 
         if (is_null($token)) {
-
             $payload = [
-                "client_secret" => config('app.equity.client_secret'),
-                "client_id" => config('app.equity.client_id'),
-                "grant_type" => config('app.equity.grant_type'),
-            ];
+                'form_params' => [
+                    "client_secret" => config('app.equity.client_secret'),
+                    "client_id" => config('app.equity.client_id'),
+                    "grant_type" => config('app.equity.grant_type'),
+                ]];
 
             Log::info('==GRANT-TYPE==' .config('app.equity.grant_type'));
 
