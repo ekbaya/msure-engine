@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\PurchasePolicyRequest;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Cache;
@@ -56,9 +57,10 @@ class EquityService
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $this->getAccessToken('equity'),
         ];
+        $refrence = 'REF'.Carbon::now()->timestamp;
         $body = array(
             "phoneNumber"=> $purchasePolicyRequest->mobile,
-            "reference"=> "REF010920211500",
+            "reference"=> $refrence,
             "amount"=> $purchasePolicyRequest->amount,
             "telco"=> "SAF",
             "countryCode"=> "KE",
@@ -72,7 +74,8 @@ class EquityService
         return response()->json([
             'status' => 0,
             'success' => true,
-            'message' => 'Check your phone for MPESA pop up to enter PIN'
+            'message' => 'Check your phone for MPESA pop up to enter PIN',
+            'REF' => $refrence
         ]);
     }
 }
