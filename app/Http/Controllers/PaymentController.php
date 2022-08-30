@@ -8,6 +8,7 @@ use App\Services\AspinEngine;
 use App\Services\BillingCycleAccountService;
 use App\Services\BillingService;
 use App\Services\EquityService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -138,19 +139,37 @@ class PaymentController extends Controller
     //Equitel Test Callback
     public function equitelTestCallback(Request $request)
     {
-
         $response = json_decode($request->getContent());
         Log::info("EQUITEL CALLBACK====" . json_encode($response));
         $reference = $response->Reference;
-        Log::info("EQUITEL CALLBACK REFERENCE====" .$reference);
+        if ($response->StatusCode === "3") {
+            Payment::query()->where("reference", $reference)->update([
+                "transaction_id" => $response->AdditionalParameters->TelcoReference,
+                "transaction_date" => Carbon::now()->toDateTimeString(),
+                "status" => "paid"
+            ]);
+
+            $payment = Payment::where("reference", $reference)->first();
+            $user = User::where("user_id", $payment->UserId)->first()->get();
+
+            // //Commiting to AspinEngine
+            $engine = new AspinEngine();
+            $engine->addPayments($payment);
+
+            //Handling Billing Cycle Account
+            $billing = new BillingCycleAccountService();
+            $billing->create($payment);
+
+            //Handling Premium Accounts
+            $accounts = new BillingService();
+            $accounts->create($payment);
+        }
     }
 
     //Equitel Callback
     public function equitelCallback(Request $request)
     {
-
-        $response = json_decode($request->getContent());
-        Log::info("EQUITEL CALLBACK====" . json_encode($response));
+        $this->equitelTestCallback($request);// Same Implementation As Test
     }
 
 }

@@ -273,11 +273,11 @@ class AspinEngine
         $identifier = config('app.aspinengine.identifier'); //Identifier for Msure
         $url = config('app.aspinengine.base_url') . '/payments?partner=' . config('app.aspinengine.partner_guid');
         $payload = [
-            "amount_in_cents" => ($payment->Amount * 100), //converting to cents
+            "amount_in_cents" => ($payment->amount * 100), //converting to cents
             "channel" => 'ApiClient',
             "status" => 'Succeeded',
-            "mno_reference" => $payment->MpesaReceiptNumber,
-            "policy_guid" => $payment->PolicyGuid,
+            "mno_reference" => $payment->transaction_id,
+            "policy_guid" => $payment->policy_guid,
             "effected_at" => $payment->created_at,
         ];
         $response = Http::withHeaders(['Authorization' => 'Bearer ' . $this->getAccessToken($identifier)])

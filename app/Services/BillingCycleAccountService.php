@@ -14,20 +14,20 @@ class BillingCycleAccountService
 {
     public  function create(Payment $payment)
     {
-        list($months, $balance) = $this->calculateCover($payment->Amount);
+        list($months, $balance) = $this->calculateCover($payment->amount);
         if ($months == 0) {
             //Amount Less than KES 326
-            $this->balanceUserBillingCycleAccount($payment->UserId, $balance);
+            $this->balanceUserBillingCycleAccount($payment->user_id, $balance);
         } elseif ($months > 0 && $balance > 0) {
             //Update the BillingCycleAccount
-            $this->balanceUserBillingCycleAccount($payment->UserId, $balance);
+            $this->balanceUserBillingCycleAccount($payment->user_id, $balance);
 
             //create Cover
-            $amount = $payment->Amount - $balance;
-            $this->createCover($payment->UserId, $months, $amount, $payment->MpesaReceiptNumber);
+            $amount = $payment->amount - $balance;
+            $this->createCover($payment->user_id, $months, $amount, $payment->transaction_id);
         } else {
             //credit accounts : There is no pending balance
-            $this->createCover($payment->UserId, $months, $payment->Amount, $payment->MpesaReceiptNumber);
+            $this->createCover($payment->user_id, $months, $payment->amount, $payment->transaction_id);
         }
     }
 
