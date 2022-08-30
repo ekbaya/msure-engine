@@ -35,8 +35,8 @@ class EquityService
             $response = $client->sendAsync($request, $payload)->wait();
             if ($response->getStatusCode() === 200) {
                 Log::info('==EQUITY RESPONSE==' . $response->getBody());
-                $token = $response->access_token;
-                Cache::put($identifier . '_equity_payments_token', $token, $response->expires_in - 10);
+                $token = $response->getBody()->access_token;
+                Cache::put($identifier . '_equity_payments_token', $token, $response->getBody()->expires_in - 10);
             } else {
                 Log::info('==ERROR==' . $response->getBody());
                 Log::info('==STATUS CODE==' . $response->getStatusCode());
