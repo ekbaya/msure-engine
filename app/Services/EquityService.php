@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Requests\PurchasePolicyRequest;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Cache;
@@ -14,10 +15,9 @@ use phpDocumentor\Reflection\DocBlock\Tags\Return_;
  */
 class EquityService
 {
-    public function getAccessToken($identifier)
+    private function getAccessToken($identifier)
     {
         $token = Cache::get($identifier . '_equity_payments_token');
-
         if (is_null($token)) {
             $client = new Client();
             $headers = [
@@ -46,5 +46,27 @@ class EquityService
         }
 
         return $token;
+    }
+
+    public function initiatePayment(PurchasePolicyRequest $purchasePolicyRequest)
+    {
+        $client = new Client();
+        $callbackUrl = config('app.equity.callback_url');
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $this->getAccessToken('equity'),
+        ];
+        $body = `{
+          "phoneNumber": $purchasePolicyRequest->mobile,
+          "reference": "REF010920211500",
+          "amount": $purchasePolicyRequest->amount,
+          "telco": "SAF",
+          "countryCode": "KE",
+          "callBackUrl": $callbackUrl,
+          "errorCallBackUrl": $callbackUrl
+        }`;
+        $request = new Request('POST', config('app.equity.base_url') . '/v1/stkussdpush/stk/initiate', $headers, $body);
+        $response = $client->sendAsync($request)->wait();
+        Log::info('==PAYMENT RESPONSE==' . $response->getBody());
     }
 }

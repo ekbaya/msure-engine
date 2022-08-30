@@ -154,6 +154,6 @@ class PaymentController extends Controller
     public function testEquityPayments(Request $request){
       //equity
       $equity = new EquityService();
-      return $equity->getAccessToken('equity');
+    //   return $equity->getAccessToken('equity');
     }
 }
