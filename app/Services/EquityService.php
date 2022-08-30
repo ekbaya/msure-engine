@@ -68,5 +68,11 @@ class EquityService
         $request = new Request('POST', config('app.equity.base_url') . '/v1/stkussdpush/stk/initiate', $headers, $body);
         $response = $client->sendAsync($request)->wait();
         Log::info('==PAYMENT RESPONSE==' . $response->getBody());
+        
+        return response()->json([
+            'status' => 0,
+            'success' => true,
+            'message' => 'Check your phone for MPESA pop up to enter PIN'
+        ]);
     }
 }
