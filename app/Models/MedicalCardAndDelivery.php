@@ -19,8 +19,6 @@ class MedicalCardAndDelivery extends Model
 
     protected $hidden = [
         'id',
-        'status',
-        'updated_at'
     ];
 
     protected static function boot()
