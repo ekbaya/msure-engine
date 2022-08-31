@@ -148,7 +148,6 @@ class PaymentController extends Controller
             ]);
 
             $payment = Payment::where("reference", $reference)->first();
-            $user = User::where("user_id", $payment->UserId)->first()->get();
 
             // //Commiting to AspinEngine
             $engine = new AspinEngine();
