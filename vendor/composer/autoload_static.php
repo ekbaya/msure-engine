@@ -755,6 +755,7 @@ class ComposerStaticInit50b6381befa2f7c43aabf318c837ad76
         'App\\Models\\Cover' => __DIR__ . '/../..' . '/app/Models/Cover.php',
         'App\\Models\\Customer' => __DIR__ . '/../..' . '/app/Models/Customer.php',
         'App\\Models\\InsuranceProvider' => __DIR__ . '/../..' . '/app/Models/InsuranceProvider.php',
+        'App\\Models\\MedicalCardAndDelivery' => __DIR__ . '/../..' . '/app/Models/MedicalCardAndDelivery.php',
         'App\\Models\\MedicalInsurance' => __DIR__ . '/../..' . '/app/Models/MedicalInsurance.php',
         'App\\Models\\Message' => __DIR__ . '/../..' . '/app/Models/Message.php',
         'App\\Models\\Msure' => __DIR__ . '/../..' . '/app/Models/Msure.php',

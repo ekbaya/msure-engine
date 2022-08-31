@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\BillingCycleAccount;
 use App\Models\CalculatingPeriodAccount;
 use App\Models\Customer;
+use App\Models\MedicalCardAndDelivery;
 use App\Models\MedicalInsurance;
 use Illuminate\Http\Request;
 
@@ -17,6 +18,7 @@ class CustomerController extends Controller
     {
         $calculatingPeriodAccount = null;
         $billingCycleAccount = null;
+        $medicalCardAndDeliveryCost = null;
         $daysCovered = [];
         $totalInsuranceAmount = 0;
 
@@ -29,10 +31,16 @@ class CustomerController extends Controller
             //throw $th;
         }
         try {
-
             $billingCycleAccount = BillingCycleAccount::query()->where([
                 ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'active']
+            ])->firstOrFail();
+        } catch (\Throwable $th) {
+        }
+
+        try {
+            $medicalCardAndDeliveryCost = MedicalCardAndDelivery::query()->where([
+                ['user_id', '=', $request->user()->user_id]
             ])->firstOrFail();
         } catch (\Throwable $th) {
         }
@@ -64,6 +72,7 @@ class CustomerController extends Controller
                 "daily_contribution" => Customer::query()->where("user_id", $request->user()->user_id)->firstOrFail()->stage->daily_contribution,
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
+                "medicalCardAndDeliveyCost" =>$medicalCardAndDeliveryCost,
                 "settledDays" => $daysCovered,
             ],
         ], 200);
