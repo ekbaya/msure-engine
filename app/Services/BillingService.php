@@ -15,9 +15,9 @@ class BillingService
 {
     public function create(Payment $payment)
     {
-        $customer = Customer::query()->where('user_id', $payment->UserId)->firstOrFail();
+        $customer = Customer::query()->where('user_id', $payment->user_id)->firstOrFail();
         $customer->stage; //preload
-        list($days, $balance) = $this->calculatePremium($customer, $payment->Amount);
+        list($days, $balance) = $this->calculatePremium($customer, $payment->amount);
         if ($days == 0) {
             //Amount Less than customer stage daily fee
             $this->balanceUserCalculatingPeriodAccount($customer, $balance);
@@ -26,10 +26,10 @@ class BillingService
             $this->balanceUserCalculatingPeriodAccount($customer, $balance);
 
             //credit Accounts
-            $this->creditPremiumAccounts($customer, $days, $payment->MpesaReceiptNumber);
+            $this->creditPremiumAccounts($customer, $days, $payment->transaction_id);
         } else {
             //credit accounts : There is no pending balance
-            $this->creditPremiumAccounts($customer, $days, $payment->MpesaReceiptNumber);
+            $this->creditPremiumAccounts($customer, $days, $payment->transaction_id);
         }
     }
 
