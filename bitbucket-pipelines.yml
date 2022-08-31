@@ -15,14 +15,14 @@ pipelines:
               - bash ./devops/build-server.sh
               - bash ./devops/build-project.sh
               # - bash ./devops/run-tests.sh    
-#     - step:
-#         name: 'Deploying to Production'
-#         deployment: production
-# #        trigger: 'manual'
-#         script:
-#           - bash ./devops/build-server.sh
-#           - bash ./devops/build-for-production.sh
-#           - bash ./devops/scripts/deploy-production.sh
+    - step:
+        name: 'Deploying to Production'
+        deployment: production
+#        trigger: 'manual'
+        script:
+          - bash ./devops/build-server.sh
+          - bash ./devops/build-for-production.sh
+          - bash ./devops/scripts/deploy-production.sh
 
 definitions:
   services:
