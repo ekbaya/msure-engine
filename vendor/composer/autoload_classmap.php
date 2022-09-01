@@ -105,6 +105,7 @@ return array(
     'App\\Models\\Cover' => $baseDir . '/app/Models/Cover.php',
     'App\\Models\\Customer' => $baseDir . '/app/Models/Customer.php',
     'App\\Models\\InsuranceProvider' => $baseDir . '/app/Models/InsuranceProvider.php',
+    'App\\Models\\MedicalCardAndDelivery' => $baseDir . '/app/Models/MedicalCardAndDelivery.php',
     'App\\Models\\MedicalInsurance' => $baseDir . '/app/Models/MedicalInsurance.php',
     'App\\Models\\Message' => $baseDir . '/app/Models/Message.php',
     'App\\Models\\Msure' => $baseDir . '/app/Models/Msure.php',
