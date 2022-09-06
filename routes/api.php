@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], 
 
     Route::get('products', [ProductsController::class, 'index']);
     Route::post('policy/buy', [ProductsController::class, 'purchasePolicy']);
+    Route::post('initiate-payment', [PaymentController::class, 'initiateEquityPaybill']);
     Route::get('policy', [ProductsController::class, 'customerPolicy']);
     Route::get('policy/active', [ProductsController::class, 'customerActivepolicy']);
     Route::delete('policy/{id}', [ProductsController::class, 'cancelPolicy']);

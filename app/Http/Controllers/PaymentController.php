@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InitiatePaymentRequest;
 use App\Models\Payment;
 use App\Models\User;
 use App\Services\AspinEngine;
 use App\Services\BillingCycleAccountService;
 use App\Services\BillingService;
+use App\Services\EquityService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -167,6 +169,12 @@ class PaymentController extends Controller
     public function equitelCallback(Request $request)
     {
         $this->equitelTestCallback($request);// Same Implementation As Test
+    }
+
+    public function initiateEquityPaybill(InitiatePaymentRequest $request){
+        //equity
+        $equity = new EquityService();
+        return $equity->initiatePaybillPayment($request);
     }
 
 }

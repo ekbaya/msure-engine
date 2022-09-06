@@ -238,6 +238,8 @@ return [
         'client_id' => env('EQUITY_CLIENT_ID'),
         'client_secret' => env('EQUITY_CLIENT_SECRET'),
         'identifier' => 'equity',
+        'paybill' => env('EQUITY_PAYBILL', "247247"),
+        'account_preffix' => env('EQUITY_ACCOUNT_PREFFIX', "944181"),
         'settlement_account' => env('EQUITY_CLIENT_SETTLEMENT_ACCOUNT'),
         'callback_url' => env('APP_URL').'/api/v1/test_payments',
         'grant_type'   => env('EQUITY_GRANT_TYPE'),

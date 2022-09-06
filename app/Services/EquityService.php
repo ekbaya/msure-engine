@@ -2,15 +2,14 @@
 
 namespace App\Services;
 
+use App\Http\Requests\InitiatePaymentRequest;
 use App\Http\Requests\PurchasePolicyRequest;
 use App\Models\Payment;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 
 /**
  * Class EquityService.
@@ -86,6 +85,33 @@ class EquityService
             'status' => 0,
             'success' => true,
             'message' => 'Check your phone for MPESA pop up to enter PIN',
+        ]);
+    }
+
+    public function initiatePaybillPayment(InitiatePaymentRequest $initiatePaymentRequest)
+    {
+        $reference = config('app.equity.account_preffix').substr((string)Carbon::now()->timestamp, -6);
+
+        Payment::create(
+            [
+                "reference" => $reference,
+                "amount" => "waiting",
+                "phone" => "waiting",
+                "policy_guid" => $initiatePaymentRequest->policy_id,
+                "user_id" => $initiatePaymentRequest->user()->user_id
+            ]
+            );
+        return response()->json([
+            'status' => 0,
+            'success' => true,
+            'message' => 'Paymnet initialized sucessfully',
+            'bill' => [
+                'reference' => $reference,
+                'paybill' => config('app.equity.paybill'),
+                'account_number' => $reference,
+                'policy_guid' => $initiatePaymentRequest->policy_id,
+
+            ],
         ]);
     }
 }
