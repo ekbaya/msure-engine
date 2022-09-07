@@ -47,4 +47,14 @@ class MedicalCardAndDeliveryService
             ['amount' => $newAmount]
         );
     }
+
+    public static function settleBillingAccount(MedicalCardAndDelivery $billingAccount): MedicalCardAndDelivery
+    {
+        $billingAccount->update(
+            [
+                'status' => 'settled'
+            ]
+        );
+        return $billingAccount;
+    }
 }
