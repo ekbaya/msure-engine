@@ -72,8 +72,13 @@ class CustomerController extends Controller
                 "daily_contribution" => Customer::query()->where("user_id", $request->user()->user_id)->firstOrFail()->stage->daily_contribution,
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
-                "medicalCardAndDeliveyCost" =>$medicalCardAndDeliveryCost,
+                "medicalCardAndDeliveyCost" => $medicalCardAndDeliveryCost,
                 "settledDays" => $daysCovered,
+                "inceptionPayment" => [
+                    "inception_date" => $request->user()->created_at,
+                    "amount" => 461,
+                    "balance" => $medicalCardAndDeliveryCost->status === "closed" ? 0 : (461 - ($medicalCardAndDeliveryCost->amount + $billingCycleAccount->amount)),
+                ]
             ],
         ], 200);
     }
