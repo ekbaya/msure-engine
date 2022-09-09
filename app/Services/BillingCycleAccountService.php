@@ -46,7 +46,7 @@ class BillingCycleAccountService
             //This is not first time payment
             if ($billing->status === "active") {
                 $balance = $billing->amount + $payment->amount;
-                if ($balance == 0) {
+                if ($balance == 135) {
                     //Close Account
                     MedicalCardAndDeliveryService::closeBillingAccount($billing);
                     $operationalAmount = 0;
@@ -117,12 +117,18 @@ class BillingCycleAccountService
             ['status', '=', 'active']
         ])->first();
 
+        $billing = MedicalCardAndDelivery::query()->where([
+            ['user_id', '=', $user_id]
+        ])->first();
+
         if ($billingCycleAccount) {
             $newAmount = $billingCycleAccount->amount + $balance;
             if ($newAmount < 326) {
                 //Update Account
                 $this->updateBillingCycleAccount($billingCycleAccount, $newAmount);
             } elseif ($newAmount == 326) {
+                //settle medical card and shipping fee
+                MedicalCardAndDeliveryService::settleBillingAccount($billing);
                 //close account
                 $account = $this->closeBillingCycleAccount($billingCycleAccount);
 
@@ -131,6 +137,10 @@ class BillingCycleAccountService
             } else {
                 //Amount is more than 326
                 $amount = $newAmount - 326;
+
+                //settle medical card and shipping fee
+                MedicalCardAndDeliveryService::settleBillingAccount($billing);
+
                 //close account
                 $account = $this->closeBillingCycleAccount($billingCycleAccount);
                 //Open a new Billing Cycle Account
@@ -147,6 +157,13 @@ class BillingCycleAccountService
 
     function createCover($user_id, $months, $amount, $reference) //Mpesa R
     {
+        $billing = MedicalCardAndDelivery::query()->where([
+            ['user_id', '=', $user_id]
+        ])->first();
+
+        //Settle Medical Card and Shipping fee account
+        MedicalCardAndDeliveryService::settleBillingAccount($billing);
+        
         //Get End date of the latest Cover
         $cover = Cover::query()->where("user_id", $user_id)->latest('created_at')->first();
         if ($cover) {

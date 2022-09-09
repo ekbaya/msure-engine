@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCustomerRequest;
-use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\BillingCycleAccount;
 use App\Models\CalculatingPeriodAccount;
 use App\Models\Customer;
@@ -21,6 +19,7 @@ class CustomerController extends Controller
         $medicalCardAndDeliveryCost = null;
         $daysCovered = [];
         $totalInsuranceAmount = 0;
+        $billingCycleAccountAmount = 0;
 
         try {
             $calculatingPeriodAccount = CalculatingPeriodAccount::query()->where([
@@ -35,6 +34,7 @@ class CustomerController extends Controller
                 ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'active']
             ])->firstOrFail();
+            $billingCycleAccountAmount = $billingCycleAccount->amount;
         } catch (\Throwable $th) {
         }
 
@@ -72,8 +72,13 @@ class CustomerController extends Controller
                 "daily_contribution" => Customer::query()->where("user_id", $request->user()->user_id)->firstOrFail()->stage->daily_contribution,
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
-                "medicalCardAndDeliveyCost" =>$medicalCardAndDeliveryCost,
+                "medicalCardAndDeliveyCost" => $medicalCardAndDeliveryCost,
                 "settledDays" => $daysCovered,
+                "inceptionPayment" => [
+                    "inception_date" => $request->user()->created_at,
+                    "amount" => 461,
+                    "balance" => $medicalCardAndDeliveryCost->status === "settled" ? 0 : (461 - ($medicalCardAndDeliveryCost->amount + $billingCycleAccountAmount)),
+                ]
             ],
         ], 200);
     }
