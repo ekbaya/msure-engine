@@ -20,6 +20,7 @@ class CustomerController extends Controller
         $daysCovered = [];
         $totalInsuranceAmount = 0;
         $billingCycleAccountAmount = 0;
+        $medicalCardAndDeliveryCostBalance = 461;
 
         try {
             $calculatingPeriodAccount = CalculatingPeriodAccount::query()->where([
@@ -42,6 +43,12 @@ class CustomerController extends Controller
             $medicalCardAndDeliveryCost = MedicalCardAndDelivery::query()->where([
                 ['user_id', '=', $request->user()->user_id]
             ])->firstOrFail();
+
+            if ($medicalCardAndDeliveryCost->status === "settled") {
+                $medicalCardAndDeliveryCostBalance = 0;
+            } else {
+                $medicalCardAndDeliveryCostBalance = (461 - ($medicalCardAndDeliveryCost->amount + $billingCycleAccountAmount));
+            }
         } catch (\Throwable $th) {
         }
 
@@ -77,7 +84,7 @@ class CustomerController extends Controller
                 "inceptionPayment" => [
                     "inception_date" => $request->user()->created_at,
                     "amount" => 461,
-                    "balance" => $medicalCardAndDeliveryCost->status === "settled" ? 0 : (461 - ($medicalCardAndDeliveryCost->amount + $billingCycleAccountAmount)),
+                    "balance" => $medicalCardAndDeliveryCostBalance,
                 ]
             ],
         ], 200);
