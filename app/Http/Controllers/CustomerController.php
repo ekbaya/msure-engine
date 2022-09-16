@@ -85,6 +85,8 @@ class CustomerController extends Controller
                     "inception_date" => $request->user()->created_at,
                     "amount" => 461,
                     "balance" => $medicalCardAndDeliveryCostBalance,
+                    "cover_amount" => 326,
+                    "medical_card" => 135,
                 ]
             ],
         ], 200);
