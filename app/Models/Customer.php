@@ -30,9 +30,14 @@ class Customer extends Model
         'id',
     ];
 
-    public function stage()
+    // public function stage()
+    // {
+    //     return $this->belongsTo(Stage::class);
+    // }
+
+    public function organization()
     {
-        return $this->belongsTo(Stage::class);
+        return $this->belongsTo(Organization::class);
     }
 
     protected static function boot()

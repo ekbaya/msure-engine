@@ -57,7 +57,7 @@ Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], 
     Route::get('/user', function (Request $request) {
         log::info('++++ Incoming Request ++++++' . $request);
         $customer = Customer::query()->where('user_id', $request->user()->user_id)->firstOrFail();
-        $customer->stage;//preload
+        $customer->organization;//preload
         return response()->json([
             "status"=> 0,
             "sucess"=> true,
