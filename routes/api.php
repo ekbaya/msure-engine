@@ -10,6 +10,7 @@ use App\Http\Controllers\PlacesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ReasonController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrganizationController;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
@@ -42,6 +43,10 @@ Route::prefix('v1')->group(function () {
     Route::get('places/sub_counties/{county_id}', [PlacesController::class, 'subCounties']);
     Route::get('places/wards/{sub_county_id}', [PlacesController::class, 'wards']);
     Route::get('places/stages/{ward_id}', [PlacesController::class, 'stages']);
+
+    //Organizations
+    Route::post('orgabizations/create', [OrganizationController::class, 'addOrganization']);
+
 
     //Equite Callbacks
     Route::post('test_payments', [PaymentController::class, 'equitelTestCallback']);
