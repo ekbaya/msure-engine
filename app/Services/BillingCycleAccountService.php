@@ -16,19 +16,25 @@ class BillingCycleAccountService
     public  function create(Payment $payment)
     {
         list($months, $balance) = $this->calculateCover($payment);
-        if ($months == 0) {
-            //Amount Less than KES 326
-            $this->balanceUserBillingCycleAccount($payment->user_id, $balance);
-        } elseif ($months > 0 && $balance > 0) {
-            //Update the BillingCycleAccount
-            $this->balanceUserBillingCycleAccount($payment->user_id, $balance);
-
-            //create Cover
-            $amount = $payment->amount - $balance;
-            $this->createCover($payment->user_id, $months, $amount, $payment->transaction_id);
-        } else {
-            //credit accounts : There is no pending balance
-            $this->createCover($payment->user_id, $months, $payment->amount, $payment->transaction_id);
+        if ($months == 0 && $balance == 0) {
+            // Do nothing
+        }else{
+            if ($months == 0 && $balance > 0) {
+                //Amount Less than KES 326
+                $this->balanceUserBillingCycleAccount($payment->user_id, $balance);
+            } elseif ($months > 0 && $balance > 0) {
+                //Update the BillingCycleAccount
+                $this->balanceUserBillingCycleAccount($payment->user_id, $balance);
+    
+                //create Cover
+                $amount = $payment->amount - $balance;
+                $this->createCover($payment->user_id, $months, $amount, $payment->transaction_id);
+            } else  if($months > 1){
+                //credit accounts : There is no pending balance
+                $this->createCover($payment->user_id, $months, $payment->amount, $payment->transaction_id);
+            }else{
+                //Unhandled default
+            }
         }
     }
 

@@ -95,6 +95,8 @@
     'Illuminate\\Database\\Console\\WipeCommand' => 'TimWassenburg\\ServiceGenerator\\Http\\Providers\\CommandServiceProvider',
     'Illuminate\\Foundation\\Console\\DownCommand' => 'TimWassenburg\\ServiceGenerator\\Http\\Providers\\CommandServiceProvider',
     'Illuminate\\Foundation\\Console\\EnvironmentCommand' => 'TimWassenburg\\ServiceGenerator\\Http\\Providers\\CommandServiceProvider',
+    'Illuminate\\Foundation\\Console\\EnvironmentDecryptCommand' => 'TimWassenburg\\ServiceGenerator\\Http\\Providers\\CommandServiceProvider',
+    'Illuminate\\Foundation\\Console\\EnvironmentEncryptCommand' => 'TimWassenburg\\ServiceGenerator\\Http\\Providers\\CommandServiceProvider',
     'Illuminate\\Foundation\\Console\\EventCacheCommand' => 'TimWassenburg\\ServiceGenerator\\Http\\Providers\\CommandServiceProvider',
     'Illuminate\\Foundation\\Console\\EventClearCommand' => 'TimWassenburg\\ServiceGenerator\\Http\\Providers\\CommandServiceProvider',
     'Illuminate\\Foundation\\Console\\EventListCommand' => 'TimWassenburg\\ServiceGenerator\\Http\\Providers\\CommandServiceProvider',

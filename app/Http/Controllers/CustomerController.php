@@ -65,7 +65,7 @@ class CustomerController extends Controller
                 ['user_id', '=', $request->user()->user_id],
                 ['status', '=', 'closed']
             ])->count();
-            $totalInsuranceAmount = 326 * $count;
+            $totalInsuranceAmount = 326 * $count;//get money from the covers
         } catch (\Throwable $th) {
             //throw $th;
         }

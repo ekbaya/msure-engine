@@ -1903,6 +1903,18 @@ trait HasAttributes
     }
 
     /**
+     * Discard attribute changes and reset the attributes to their original state.
+     *
+     * @return $this
+     */
+    public function discardChanges()
+    {
+        [$this->attributes, $this->changes] = [$this->original, []];
+
+        return $this;
+    }
+
+    /**
      * Determine if the model or any of the given attribute(s) were changed when the model was last saved.
      *
      * @param  array|string|null  $attributes
@@ -2064,6 +2076,16 @@ trait HasAttributes
         );
 
         return $this;
+    }
+
+    /**
+     * Get the accessors that are being appended to model arrays.
+     *
+     * @return array
+     */
+    public function getAppends()
+    {
+        return $this->appends;
     }
 
     /**
