@@ -28,10 +28,10 @@ class BillingCycleAccountService
     
                 //create Cover
                 $amount = $payment->amount - $balance;
-                $this->createCover($payment->user_id, $months, $amount, $payment->transaction_id);
+                $this->createCover($payment->user_id, $months, $payment->transaction_id);
             } else  if($months > 1){
                 //credit accounts : There is no pending balance
-                $this->createCover($payment->user_id, $months, $payment->amount, $payment->transaction_id);
+                $this->createCover($payment->user_id, $months, $payment->transaction_id);
             }else{
                 //Unhandled default
             }
@@ -139,7 +139,7 @@ class BillingCycleAccountService
                 $account = $this->closeBillingCycleAccount($billingCycleAccount);
 
                 //Create Cover
-                $this->createCover($user_id, 1, $newAmount, $account->account_id);
+                $this->createCover($user_id, 1, $account->account_id);
             } else {
                 //Amount is more than 326
                 $amount = $newAmount - 326;
@@ -153,7 +153,7 @@ class BillingCycleAccountService
                 CoverService::createBillingCycle($user_id, $amount);
 
                 //Create Cover
-                $this->createCover($user_id, 1, "326", $account->account_id);
+                $this->createCover($user_id, 1,$account->account_id);
             }
         } else {
             //No Billing Cycle Account: Create New
@@ -161,7 +161,7 @@ class BillingCycleAccountService
         }
     }
 
-    function createCover($user_id, $months, $amount, $reference) //Mpesa R
+    function createCover($user_id, $months, $reference) //Mpesa R
     {
         $billing = MedicalCardAndDelivery::query()->where([
             ['user_id', '=', $user_id]
@@ -178,26 +178,28 @@ class BillingCycleAccountService
 
             if ($date->isPast()) {
                 //The cover is expired: We cover from inception date (Today)
-                $this->coverFromToday($user_id, $months, $amount, $reference);
+                $this->coverFromToday($user_id, $months, $reference);
             } else {
                 //Cover is Active
-                $this->coverLastCoverExpiryDate($user_id, $months, $expiryDate, $amount, $reference);
+                $this->coverLastCoverExpiryDate($user_id, $months, $expiryDate, $reference);
             }
         } else {
             //First Cover: We cover from inception date (Today)
-            $this->coverFromToday($user_id, $months, $amount, $reference);
+            $this->coverFromToday($user_id, $months, $reference);
         }
     }
 
-    function coverFromToday($user_id, $months, $amount, $reference)
+    function coverFromToday($user_id, $months, $reference)
     {
+        $coverAmount = $months * 326;
         $start_date = Carbon::now();
-        CoverService::create($user_id, $start_date->format('d-m-Y'), $start_date->addMonths($months)->format('d-m-Y'), $amount, $reference);
+        CoverService::create($user_id, $start_date->format('d-m-Y'), $start_date->addMonths($months)->format('d-m-Y'),$coverAmount, $reference);
     }
 
-    function coverLastCoverExpiryDate($user_id, $months, $activeCoverExpiryDate, $amount, $reference)
+    function coverLastCoverExpiryDate($user_id, $months, $activeCoverExpiryDate, $reference)
     {
+        $coverAmount = $months * 326;
         $start_date = Carbon::createFromFormat('d-m-Y', $activeCoverExpiryDate);
-        CoverService::create($user_id, $start_date->format('d-m-Y'), $start_date->addMonths($months)->format('d-m-Y'), $amount, $reference);
+        CoverService::create($user_id, $start_date->format('d-m-Y'), $start_date->addMonths($months)->format('d-m-Y'), $coverAmount, $reference);
     }
 }
