@@ -7,6 +7,7 @@ use App\Models\CalculatingPeriodAccount;
 use App\Models\Customer;
 use App\Models\MedicalCardAndDelivery;
 use App\Models\MedicalInsurance;
+use App\Models\Cover;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -61,11 +62,14 @@ class CustomerController extends Controller
         }
 
         try {
-            $count = BillingCycleAccount::query()->where([
-                ['user_id', '=', $request->user()->user_id],
-                ['status', '=', 'closed']
-            ])->count();
-            $totalInsuranceAmount = 326 * $count;//get money from the covers
+            $covers = Cover::query()->where([
+                ['user_id', '=', $request->user()->user_id]
+            ])->get();
+
+            foreach ($covers as $cover) {
+                $totalInsuranceAmount += $cover->amount;
+            }
+            
         } catch (\Throwable $th) {
             //throw $th;
         }
