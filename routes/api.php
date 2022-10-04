@@ -45,7 +45,7 @@ Route::prefix('v1')->group(function () {
     Route::get('places/stages/{ward_id}', [PlacesController::class, 'stages']);
 
     //Organizations
-    Route::post('orgabizations/create', [OrganizationController::class, 'addOrganization']);
+    Route::post('organizations/create', [OrganizationController::class, 'addOrganization']);
 
 
     //Equite Callbacks
