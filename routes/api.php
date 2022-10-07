@@ -46,6 +46,7 @@ Route::prefix('v1')->group(function () {
 
     //Organizations
     Route::post('organizations/create', [OrganizationController::class, 'addOrganization']);
+    Route::get('organizations/{type}', [OrganizationController::class, 'getOrganizationsByType']);
 
 
     //Equite Callbacks
