@@ -16,10 +16,10 @@ class BillingService
     public function create(Payment $payment)
     {
         $customer = Customer::query()->where('user_id', $payment->user_id)->firstOrFail();
-        $customer->stage; //preload
+        $customer->organization; //preload
         list($days, $balance) = $this->calculatePremium($customer, $payment->amount);
         if ($days == 0) {
-            //Amount Less than customer stage daily fee
+            //Amount Less than customer organization daily fee
             $this->balanceUserCalculatingPeriodAccount($customer, $balance);
         } elseif ($days > 0 && $balance > 0) {
             //Update the Calculating Period Accounts
@@ -37,8 +37,8 @@ class BillingService
 
     function calculatePremium($customer, $amount)
     {
-        $days = (int)($amount / $customer->stage->daily_contribution);
-        $balance = $amount % $customer->stage->daily_contribution;
+        $days = (int)($amount / $customer->organization->daily_contribution);
+        $balance = $amount % $customer->organization->daily_contribution;
         return array($days, $balance);
     }
 
@@ -46,7 +46,7 @@ class BillingService
     {
         $calculatingPeriodAccount->update(
             [
-                'amount' => $customer->stage->daily_contribution,
+                'amount' => $customer->organization->daily_contribution,
                 'status' => 'closed'
             ]
         );
@@ -65,7 +65,7 @@ class BillingService
     function balanceUserCalculatingPeriodAccount($customer, $balance)
     {
         /*
-            - Amount is less than Stage Amount
+            - Amount is less than organization Amount
             - Update the calculating period account
             - Update the Billing Cycle Account
              */
@@ -76,18 +76,18 @@ class BillingService
 
         if ($calculatingPeriodAccount) {
             $newAmount = $calculatingPeriodAccount->amount + $balance;
-            if ($newAmount < $customer->stage->daily_contribution) {
+            if ($newAmount < $customer->organization->daily_contribution) {
                 //Update Account
                 $this->updateCalculatingPeriodAccount($calculatingPeriodAccount, $newAmount);
-            } elseif ($newAmount == $customer->stage->daily_contribution) {
+            } elseif ($newAmount == $customer->organization->daily_contribution) {
                 //close account
                 $account = $this->closeCalculatingPeriodAccount($customer, $calculatingPeriodAccount);
 
                 //Credit Accounts
                 $this->creditPremiumAccounts($customer, 1, $account->account_id);
             } else {
-                //Amount is more than customer stage amount
-                $amount = $newAmount - $customer->stage->daily_contribution;
+                //Amount is more than customer organization amount
+                $amount = $newAmount - $customer->organization->daily_contribution;
                 //close account
                 $account = $this->closeCalculatingPeriodAccount($customer, $calculatingPeriodAccount);
                 //Open a new Calculating Period Account
