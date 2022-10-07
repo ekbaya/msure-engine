@@ -48,6 +48,7 @@ return array(
     'App\\Http\\Middleware\\TrustHosts' => $baseDir . '/app/Http/Middleware/TrustHosts.php',
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
+    'App\\Http\\Requests\\CreateOrganizationRequest' => $baseDir . '/app/Http/Requests/CreateOrganizationRequest.php',
     'App\\Http\\Requests\\InitiateClaimRequest' => $baseDir . '/app/Http/Requests/InitiateClaimRequest.php',
     'App\\Http\\Requests\\InitiatePaymentRequest' => $baseDir . '/app/Http/Requests/InitiatePaymentRequest.php',
     'App\\Http\\Requests\\LoginUserRequest' => $baseDir . '/app/Http/Requests/LoginUserRequest.php',

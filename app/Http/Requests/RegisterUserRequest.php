@@ -25,7 +25,7 @@ class RegisterUserRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'organization_id' => 'required',
+            // 'organization_id' => 'required',
             'surname' => 'required',
             'phone' => 'required|phone:KE|unique:users,phone',
             'email' => 'email|unique:users,email',
