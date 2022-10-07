@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth:api', 'role:customer'], 'prefix' => 'v1'], 
     Route::put('users/profile', [UserController::class, 'updateProfile']);
     Route::get('user-status', [UserController::class, 'status']);
     Route::get('user/service-accounts', [CustomerController::class, 'serviceAccounts']);
+    Route::put('users/update-organization', [CustomerController::class, 'updateOrganization']);
     Route::get('user/payments', [PaymentController::class, 'userTransactions']);
     Route::get('user/payments/{filter}', [PaymentController::class, 'userTransactions']);
 

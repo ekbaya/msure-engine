@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateOrganizationRequest;
 use App\Models\BillingCycleAccount;
 use App\Models\CalculatingPeriodAccount;
 use App\Models\Customer;
@@ -69,7 +70,6 @@ class CustomerController extends Controller
             foreach ($covers as $cover) {
                 $totalInsuranceAmount += $cover->amount;
             }
-            
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -94,5 +94,19 @@ class CustomerController extends Controller
                 ]
             ],
         ], 200);
+    }
+
+    public function updateOrganization(UpdateOrganizationRequest $request)
+    {
+        Customer::query()->where("user_id", $request->user()->user_id)->update([
+            "organization_id" => $request->organization_id,
+        ]);
+
+        return response()->json([
+            "sucess"=>true,
+            "status" => 0,
+            "message" => "Account updated successfully",
+            "data" => Customer::query()->where("user_id", $request->organization_id)
+        ]);
     }
 }
