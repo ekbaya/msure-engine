@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -53,7 +54,7 @@ class AuthController extends Controller
             $engine = new AspinEngine();
             $engine->registerCustomer($c);
         } catch (Exception $e) {
-            Log::info('==Failed To Register=='.$e->getMessage());
+            Log::info('==Failed To Register==' . $e->getMessage());
         }
 
         return $this->getToken($user);
@@ -108,5 +109,44 @@ class AuthController extends Controller
             return response()->json(['message' => 'OTP Validated successfully.']);
         }
         return response()->json(['message' => 'Unable to verify your otp.'], 400);
+    }
+
+    public function checkAccount(Request $request)
+    {
+        $data = $request->all();
+        $customer = null;
+        foreach ($data as $key => $value) {
+            Log::info("Checking account with " . $key . "is equal to  " . $value);
+            if (!($key && $value)) {
+                return response()->json([
+                    "success" => true,
+                    "status" => 0,
+                    "message" => "Failed to fetch account with" . $key,
+                    "error" => $key . " is required"
+                ]);
+            }
+
+            try {
+                $customer = Customer::where($key, $value)->first();
+            } catch (\Throwable $th) {
+                //throw $th;
+                Log::error("Error: ".$th);
+            }
+        }
+
+        if (!$customer) {
+            return response()->json([
+                "success" => false,
+                "status" => 1,
+                "message" => "User is not found",
+            ]);
+        }
+
+        return response()->json([
+            "success" => true,
+            "status" => 0,
+            "message" => "User fetched successfully",
+            "data" => $customer
+        ]);
     }
 }

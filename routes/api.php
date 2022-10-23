@@ -33,6 +33,7 @@ use Illuminate\Http\Request;
 Route::prefix('v1')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('user', [AuthController::class, 'checkAccount']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('callbacl_url', [PaymentController::class, 'callback']);
     Route::post('reasons', [ReasonController::class, 'create']);
