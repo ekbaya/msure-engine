@@ -143,13 +143,14 @@ class AuthController extends Controller
         }
 
         $user = User::query()->where("user_id", $customer->user_id)->firstOrFail();
+        $token = $user->createToken('auth_token')->accessToken;
         
         return response()->json([
             "success" => true,
             "status" => 0,
             "message" => "User fetched successfully",
             "data" => $customer,
-            "token" => $this->getToken($user)
+            "token" => $token->token,
         ]);
     }
 }
