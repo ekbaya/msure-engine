@@ -80,7 +80,7 @@ class CustomerController extends Controller
             "message" => "Service accounts fetched sucessfully.",
             "data" => [
                 "insurance_amount" => (string)$totalInsuranceAmount,
-                "daily_contribution" => Customer::query()->where("user_id", $request->user()->user_id)->firstOrFail()->stage->daily_contribution,
+                "daily_contribution" => Customer::query()->where("user_id", $request->user()->user_id)->firstOrFail()->organization->daily_contribution,
                 "calculatingPeriodAccount" => $calculatingPeriodAccount,
                 "billingCycleAccount" => $billingCycleAccount,
                 "medicalCardAndDeliveyCost" => $medicalCardAndDeliveryCost,
